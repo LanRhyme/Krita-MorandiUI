@@ -1,3 +1,4 @@
+from ..qt_compat import *
 """
     Plugin for Krita UI Redesign, Copyright (C) 2020 Kapyia
 
