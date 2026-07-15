@@ -1,5 +1,9 @@
 # Krita Morandi UI
 
+![Screenshot](screenshot.png)
+
+
+
 A sleek, flat, and borderless UI redesign for Krita, heavily inspired by modern design paradigms. Now customized with the **Morandi theme** and fully translated into Chinese.
 
 ## 兼容性说明
