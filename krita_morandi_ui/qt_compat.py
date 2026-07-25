@@ -1,11 +1,11 @@
 try:
-    from PyQt6.QtCore import Qt, QObject, QEvent, QPoint, QSize, QTimer
+    from PyQt6.QtCore import Qt, QObject, QEvent, QPoint, QSize, QTimer, QPropertyAnimation, QEasingCurve, QParallelAnimationGroup, QRect
     from PyQt6.QtGui import QPalette, QColor
     from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QFormLayout, QGridLayout, QScrollArea,
                                  QToolButton, QPushButton, QLabel, QComboBox, QColorDialog,
                                  QCheckBox, QSlider, QGroupBox, QSpinBox, QFileDialog, QTabWidget,
                                  QLineEdit, QPlainTextEdit, QSizePolicy, QMdiArea, QDockWidget, QMessageBox, QApplication,
-                                 QStyleOption, QStylePainter, QStyle, QDialog)
+                                 QStyleOption, QStylePainter, QStyle, QDialog, QGraphicsOpacityEffect)
     
     # Enums PyQt6
     MouseButton_LeftButton = Qt.MouseButton.LeftButton
@@ -28,13 +28,13 @@ try:
         QMessageBox.exec_ = QMessageBox.exec
 
 except ImportError:
-    from PyQt5.QtCore import Qt, QObject, QEvent, QPoint, QSize, QTimer
+    from PyQt5.QtCore import Qt, QObject, QEvent, QPoint, QSize, QTimer, QPropertyAnimation, QEasingCurve, QParallelAnimationGroup, QRect
     from PyQt5.QtGui import QPalette, QColor
     from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QFormLayout, QGridLayout, QScrollArea,
                                  QToolButton, QPushButton, QLabel, QComboBox, QColorDialog,
                                  QCheckBox, QSlider, QGroupBox, QSpinBox, QFileDialog, QTabWidget,
                                  QLineEdit, QPlainTextEdit, QSizePolicy, QMdiArea, QDockWidget, QMessageBox, QApplication,
-                                 QStyleOption, QStylePainter, QStyle, QDialog)
+                                 QStyleOption, QStylePainter, QStyle, QDialog, QGraphicsOpacityEffect)
     
     # Enums PyQt5
     MouseButton_LeftButton = Qt.LeftButton

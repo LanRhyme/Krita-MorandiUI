@@ -21,6 +21,9 @@ from .ntscrollareacontainer import ntScrollAreaContainer
 from .nttogglevisiblebutton import ntToggleVisibleButton
 from krita import Krita
 
+ANIM_DURATION = 200  # ms
+
+
 class ntWidgetPad(QWidget):
     """
     An on-canvas toolbox widget. I'm dubbing widgets that 'float' 
@@ -42,6 +45,12 @@ class ntWidgetPad(QWidget):
         # Members to hold a borrowed widget and it's original parent docker for returning
         self.widget = None
         self.widgetDocker = None
+        self._anim_group = None
+
+        # Opacity effect for fade animations
+        self._opacity_effect = QGraphicsOpacityEffect(self)
+        self._opacity_effect.setOpacity(1.0)
+        self.setGraphicsEffect(self._opacity_effect)
 
          # Visibility toggle
         self.btnHide = ntToggleVisibleButton()
@@ -202,13 +211,75 @@ class ntWidgetPad(QWidget):
         return False
 
 
+    def _stopAnimations(self):
+        """Stop any running animation group"""
+        if self._anim_group and self._anim_group.state() == QPropertyAnimation.State.Running:
+            self._anim_group.stop()
+        self._anim_group = None
+
+
     def toggleWidgetVisible(self, value=None):
-        if not value:
+        if not self.widget:
+            return
+
+        if value is None:
             value = not self.widget.isVisible()
-        
-        self.widget.setVisible(value)
-        self.adjustToView()  
+
+        self._stopAnimations()
+
+        if value:
+            # Show: make visible first, then animate fade-in
+            self.widget.setVisible(True)
+            self._opacity_effect.setOpacity(0.0)
+
+            fade = QPropertyAnimation(self._opacity_effect, b"opacity", self)
+            fade.setDuration(ANIM_DURATION)
+            fade.setStartValue(0.0)
+            fade.setEndValue(1.0)
+            fade.setEasingCurve(QEasingCurve.Type.OutCubic)
+
+            self._anim_group = QParallelAnimationGroup(self)
+            self._anim_group.addAnimation(fade)
+            self._anim_group.finished.connect(lambda: self.adjustToView())
+            self._anim_group.start()
+        else:
+            # Hide: animate fade-out, then hide
+            fade = QPropertyAnimation(self._opacity_effect, b"opacity", self)
+            fade.setDuration(ANIM_DURATION)
+            fade.setStartValue(1.0)
+            fade.setEndValue(0.0)
+            fade.setEasingCurve(QEasingCurve.Type.InCubic)
+
+            self._anim_group = QParallelAnimationGroup(self)
+            self._anim_group.addAnimation(fade)
+            self._anim_group.finished.connect(lambda: self._finishHide())
+            self._anim_group.start()
+
         self.updateHideButtonIcon(value)
+
+    def _finishHide(self):
+        """Called after fade-out completes to actually hide the widget"""
+        if self.widget:
+            self.widget.setVisible(False)
+        self._opacity_effect.setOpacity(1.0)
+        self.adjustToView()
+
+
+    def showEvent(self, event):
+        """Fade-in when the pad is first shown"""
+        super().showEvent(event)
+        self._stopAnimations()
+        self._opacity_effect.setOpacity(0.0)
+
+        fade = QPropertyAnimation(self._opacity_effect, b"opacity", self)
+        fade.setDuration(ANIM_DURATION + 100)
+        fade.setStartValue(0.0)
+        fade.setEndValue(1.0)
+        fade.setEasingCurve(QEasingCurve.Type.OutCubic)
+
+        self._anim_group = QParallelAnimationGroup(self)
+        self._anim_group.addAnimation(fade)
+        self._anim_group.start()
 
 
     def updateHideButtonIcon(self, isVisible): 
