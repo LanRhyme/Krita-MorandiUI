@@ -47,6 +47,8 @@ class Redesign(Extension):
         if Application.readSetting("Redesign", "usesNuToolOptions", "true") == "true":
             self.usesNuToolOptions = True
 
+        self.usesCanvasSync = Application.readSetting("Redesign", "usesCanvasSync", "true") == "true"
+
         # Load initial color & style settings
         self.loadColorSettings()
 
@@ -171,10 +173,6 @@ class Redesign(Extension):
         for a in actions:
             menu.addAction(a)
 
-        act_gpl = window.createAction("exportGPLPalette", "导出莫兰迪绘画色板 (.gpl)", "")
-        act_gpl.triggered.connect(self.exportGPLPaletteAction)
-        menu.addAction(act_gpl)
-
         actions[0].toggled.connect(self.toolbarBorderToggled)
         actions[1].toggled.connect(self.tabHeightToggled)
         actions[2].toggled.connect(self.flatThemeToggled)
@@ -203,13 +201,6 @@ class Redesign(Extension):
             msg = QMessageBox()
             msg.setText(f"主题文件已导出至:\n{file_path}")
             exec_dialog(msg)
-
-    def exportGPLPaletteAction(self):
-        file_path = variables.exportKritaGPLPalette()
-        msg = QMessageBox()
-        msg.setWindowTitle("色板导出成功")
-        msg.setText(f"全套 12 款莫兰迪画板色板已成功导出并自动安装至 Krita 调色板库:\n{file_path}\n\n可在 Krita 的'调色板 (Color Swatches)'面板中选择 Morandi Palette Gallery 随时选用莫兰迪绘画配色！")
-        exec_dialog(msg)
 
     def importExportJSONPreset(self):
         self.openSettingsDialog()
@@ -289,8 +280,12 @@ class Redesign(Extension):
             full_style_sheet += f"\n {variables.flat_combo_box_style} \n"
             full_style_sheet += f"\n {variables.flat_status_bar_style} \n"
             full_style_sheet += f"\n {variables.flat_tree_view_style} \n"
+            full_style_sheet += f"\n {variables.flat_layer_docker_style} \n"
             if variables.custom_qss_style:
                 full_style_sheet += f"\n {variables.custom_qss_style} \n"
+
+        if self.usesCanvasSync:
+            full_style_sheet += f"\n {variables.canvas_sync_style} \n"
 
         # Toolbar
         if self.usesFlatTheme:

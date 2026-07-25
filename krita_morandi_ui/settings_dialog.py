@@ -196,6 +196,9 @@ class MorandiSettingsDialog(QDialog):
         self.cb_focus_hl = QCheckBox("高亮活动/鼠标悬停面板边框")
         self.cb_focus_hl.setChecked(self.enable_focus_highlight)
 
+        self.cb_canvas_sync = QCheckBox("画布背景/围栏颜色自动同步 (Canvas Surround Sync)")
+        self.cb_canvas_sync.setChecked(getattr(self.ext, 'usesCanvasSync', True))
+
         self.title_style_combo = QComboBox()
         self.title_style_combo.addItem("标准极简 (Minimalist)", "minimalist")
         self.title_style_combo.addItem("隐藏标题栏 (Hidden Titles)", "hidden")
@@ -223,6 +226,7 @@ class MorandiSettingsDialog(QDialog):
         ui_form.addRow("工具栏风格:", self.cb_borderless)
         ui_form.addRow("标签页风格:", self.cb_thin_tabs)
         ui_form.addRow("焦点边框:", self.cb_focus_hl)
+        ui_form.addRow("画布围栏同步:", self.cb_canvas_sync)
         ui_form.addRow("停靠面板标题:", self.title_style_combo)
         ui_form.addRow("圆角弧度:", self.radius_combo)
         ui_form.addRow("滚动条规格:", self.scrollbar_combo)
@@ -449,14 +453,11 @@ class MorandiSettingsDialog(QDialog):
             variables.saveColorSchemeFile(name, target_path=file_path)
             QMessageBox.information(self, "导出成功", f"主题文件已保存至:\n{file_path}")
 
-    def export_gpl_palette(self):
-        file_path = variables.exportKritaGPLPalette()
-        QMessageBox.information(self, "色板导出成功", f"全套 12 款莫兰迪画板色板已成功导出并自动安装至 Krita 调色板库:\n{file_path}\n\n您可以在 Krita 的'调色板 (Color Swatches)'面板中选择 Morandi Palette Gallery 随时选用莫兰迪绘画配色！")
-
     def apply_changes(self):
         self.ext.usesFlatTheme = self.cb_flat.isChecked()
         self.ext.usesBorderlessToolbar = self.cb_borderless.isChecked()
         self.ext.usesThinDocumentTabs = self.cb_thin_tabs.isChecked()
+        self.ext.usesCanvasSync = self.cb_canvas_sync.isChecked()
 
         if self.ext.usesNuToolbox != self.cb_nutoolbox.isChecked():
             self.ext.nuToolboxToggled(self.cb_nutoolbox.isChecked())
@@ -473,6 +474,7 @@ class MorandiSettingsDialog(QDialog):
                              focus_hl=focus_hl_val, user_qss=user_qss_val)
 
         # Save settings to Krita config
+        Application.writeSetting("Redesign", "usesCanvasSync", str(self.cb_canvas_sync.isChecked()).lower())
         Application.writeSetting("Redesign", "accentPreset", self.accent_combo.currentText())
         Application.writeSetting("Redesign", "customAccent", self.custom_accent)
         Application.writeSetting("Redesign", "tonePreset", self.tone_combo.currentText())

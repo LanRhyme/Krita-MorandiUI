@@ -105,6 +105,8 @@ nu_toggle_button_style = ""
 nu_tool_options_style = ""
 small_tab_style = ""
 custom_qss_style = ""
+canvas_sync_style = ""
+flat_layer_docker_style = ""
 def ensureUIAssets(fg_hex, bg_hex):
     res_dir = Path.home() / ".local/share/krita/pykrita/krita_morandi_ui/resources"
     res_dir.mkdir(parents=True, exist_ok=True)
@@ -173,6 +175,7 @@ def buildFlatTheme():
     global flat_toolbox_style, flat_status_bar_style, flat_tree_view_style
     global flat_overview_docker_style, nu_toolbox_style, nu_toggle_button_style
     global nu_tool_options_style, small_tab_style, custom_qss_style
+    global canvas_sync_style, flat_layer_docker_style
 
     r = border_radius
     sb_w = scrollbar_width
@@ -931,6 +934,85 @@ def buildFlatTheme():
         }}
     """
 
+    canvas_sync_style = f"""
+    KisCanvas2, KisCanvasWidget, QGraphicsView#canvasView, QAbstractScrollArea#canvasContainer, #canvasContainer > QWidget {{
+        background-color: #{background} !important;
+        border: none !important;
+    }}
+    """
+
+    flat_layer_docker_style = f"""
+    KisLayerBox {{
+        background-color: #{background};
+        border: none !important;
+    }}
+    KisLayerBox QToolBar {{
+        background-color: transparent;
+        border: none;
+        spacing: 2px;
+        padding: 2px 0px;
+    }}
+    KisLayerBox QToolBar QToolButton, KisLayerBox QPushButton {{
+        background-color: #{alternate};
+        color: #{active_text_color};
+        border-radius: {r_sm}px;
+        padding: 3px;
+        margin: 1px;
+        border: none !important;
+    }}
+    KisLayerBox QToolBar QToolButton:hover, KisLayerBox QPushButton:hover {{
+        background-color: #{highlight};
+        color: #{background};
+    }}
+    KisLayerBox QComboBox {{
+        background-color: #{alternate};
+        color: #{active_text_color};
+        border-radius: {r_sm}px;
+        padding: 2px 20px 2px 8px;
+        min-height: 18px;
+        border: none;
+    }}
+    KisNodeView {{
+        background-color: #{background};
+        border: none !important;
+        outline: none !important;
+        show-decoration-selected: 1;
+        padding: 2px;
+    }}
+    KisNodeView::item {{
+        background-color: transparent;
+        color: #{active_text_color};
+        border-radius: {r_sm}px;
+        padding: 3px 6px;
+        margin: 1px 2px;
+        border: none !important;
+    }}
+    KisNodeView::item:selected {{
+        background-color: #{highlight} !important;
+        color: #{background} !important;
+        border-radius: {r_sm}px;
+        border: none !important;
+    }}
+    KisNodeView::item:hover:!selected {{
+        background-color: #{alternate} !important;
+        border-radius: {r_sm}px;
+    }}
+    KisNodeView::branch {{
+        background-color: transparent;
+        border: none !important;
+    }}
+    KisNodeView::branch:has-children:!has-siblings:closed,
+    KisNodeView::branch:closed:has-children:has-siblings {{
+        border-image: none;
+        image: url('{p_combo_d}');
+    }}
+    KisNodeView::branch:open:has-children:!has-siblings,
+    KisNodeView::branch:open:has-children:has-siblings {{
+        border-image: none;
+        image: url('{p_up}');
+    }}
+    """
+
     custom_qss_style = custom_qss
 
 def generateColorSchemeContent(scheme_name="Morandi-Custom"):
@@ -1117,25 +1199,3 @@ def importPresetJSON(source_path):
     sb = data.get("scrollbar_width", 6)
     op = data.get("nu_opacity", 90)
     setColors(hl, bg, alt, act, inact, rad, sb, op)
-
-def exportKritaGPLPalette(target_path=None):
-    if not target_path:
-        target_dir = Path.home() / ".local/share/krita/palettes"
-        target_dir.mkdir(parents=True, exist_ok=True)
-        file_path = target_dir / "Morandi_Palette_Gallery.gpl"
-    else:
-        file_path = Path(target_path)
-
-    lines = ["GIMP Palette", "Name: Morandi Palette Gallery", "Columns: 6", "#"]
-    
-    for g_name, g_data in GALLERY_PRESETS.items():
-        for key in ["hl", "bg", "alt"]:
-            hex_c = g_data[key].lstrip("#")
-            r = int(hex_c[0:2], 16)
-            g = int(hex_c[2:4], 16)
-            b = int(hex_c[4:6], 16)
-            tag = f"{g_name} ({key.upper()})"
-            lines.append(f"{r:3d} {g:3d} {b:3d}\t{tag}")
-
-    file_path.write_text("\n".join(lines), encoding="utf-8")
-    return str(file_path)
