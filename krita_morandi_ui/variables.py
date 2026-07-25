@@ -103,6 +103,8 @@ flat_overview_docker_style = ""
 nu_toolbox_style = ""
 nu_toggle_button_style = ""
 nu_tool_options_style = ""
+small_tab_style = ""
+custom_qss_style = ""
 def ensureSpinboxIcons(fg_hex, bg_hex):
     res_dir = Path.home() / ".local/share/krita/pykrita/krita_morandi_ui/resources"
     res_dir.mkdir(parents=True, exist_ok=True)
@@ -804,9 +806,12 @@ def buildFlatTheme():
         }}
         #toolOptionsPad > QWidget, #toolOptionsPad QScrollArea, #toolOptionsPad QScrollArea > QWidget {{
             background-color: transparent;
+            border-radius: {r_lg}px;
             border: none;
         }}
         """
+
+    custom_qss_style = custom_qss
 
 def generateColorSchemeContent(scheme_name="Morandi-Custom"):
     def rgb_str(hex_c):
