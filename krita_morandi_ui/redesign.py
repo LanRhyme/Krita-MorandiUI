@@ -12,6 +12,49 @@ from . import variables
 import xml.etree.ElementTree as ET
 from .settings_dialog import MorandiSettingsDialog
 
+DOCKER_FADE_MS = 180
+
+
+class DockerFadeFilter(QObject):
+    """Event filter that applies a subtle fade-in animation when a QDockWidget becomes visible"""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._effects = {}   # widget id -> QGraphicsOpacityEffect
+        self._anims = {}     # widget id -> QPropertyAnimation
+
+    def install(self, dock):
+        if not isinstance(dock, QDockWidget):
+            return
+        wid = id(dock)
+        if wid not in self._effects:
+            effect = QGraphicsOpacityEffect(dock)
+            effect.setOpacity(1.0)
+            dock.setGraphicsEffect(effect)
+            self._effects[wid] = effect
+            dock.installEventFilter(self)
+
+    def eventFilter(self, obj, event):
+        if event.type() == QEvent.Type.Show:
+            wid = id(obj)
+            effect = self._effects.get(wid)
+            if effect:
+                # Stop any running animation for this widget
+                old_anim = self._anims.get(wid)
+                if old_anim and old_anim.state() == QPropertyAnimation.State.Running:
+                    old_anim.stop()
+
+                effect.setOpacity(0.0)
+                anim = QPropertyAnimation(effect, b"opacity", self)
+                anim.setDuration(DOCKER_FADE_MS)
+                anim.setStartValue(0.0)
+                anim.setEndValue(1.0)
+                anim.setEasingCurve(QEasingCurve.Type.OutCubic)
+                self._anims[wid] = anim
+                anim.start()
+        return super().eventFilter(obj, event)
+
+
 class Redesign(Extension):
 
     usesFlatTheme = False
@@ -188,6 +231,11 @@ class Redesign(Extension):
             self.ntTB = ntToolBox(window)
 
         self.rebuildStyleSheet(window.qwindow())
+
+        # Install fade-in animations on all dockers
+        self._dockerFadeFilter = DockerFadeFilter(qwin)
+        for dock in qwin.findChildren(QDockWidget):
+            self._dockerFadeFilter.install(dock)
 
     def openSettingsDialog(self):
         win = Application.activeWindow().qwindow()

@@ -222,7 +222,8 @@ class ntWidgetPad(QWidget):
         if not self.widget:
             return
 
-        if value is None:
+        # clicked signal passes False (not None), so treat any falsy as "toggle"
+        if not value:
             value = not self.widget.isVisible()
 
         self._stopAnimations()
