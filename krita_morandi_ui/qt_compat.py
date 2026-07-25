@@ -1,10 +1,10 @@
 try:
     from PyQt6.QtCore import Qt, QObject, QEvent, QPoint, QSize
     from PyQt6.QtGui import QPalette, QColor
-    from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QFormLayout, QScrollArea,
+    from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QFormLayout, QGridLayout, QScrollArea,
                                  QToolButton, QPushButton, QLabel, QComboBox, QColorDialog,
                                  QCheckBox, QSlider, QGroupBox, QSpinBox, QFileDialog, QTabWidget,
-                                 QLineEdit, QSizePolicy, QMdiArea, QDockWidget, QMessageBox, QApplication,
+                                 QLineEdit, QPlainTextEdit, QSizePolicy, QMdiArea, QDockWidget, QMessageBox, QApplication,
                                  QStyleOption, QStylePainter, QStyle, QDialog)
     
     # Enums PyQt6
@@ -30,10 +30,10 @@ try:
 except ImportError:
     from PyQt5.QtCore import Qt, QObject, QEvent, QPoint, QSize
     from PyQt5.QtGui import QPalette, QColor
-    from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QFormLayout, QScrollArea,
+    from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QFormLayout, QGridLayout, QScrollArea,
                                  QToolButton, QPushButton, QLabel, QComboBox, QColorDialog,
                                  QCheckBox, QSlider, QGroupBox, QSpinBox, QFileDialog, QTabWidget,
-                                 QLineEdit, QSizePolicy, QMdiArea, QDockWidget, QMessageBox, QApplication,
+                                 QLineEdit, QPlainTextEdit, QSizePolicy, QMdiArea, QDockWidget, QMessageBox, QApplication,
                                  QStyleOption, QStylePainter, QStyle, QDialog)
     
     # Enums PyQt5
