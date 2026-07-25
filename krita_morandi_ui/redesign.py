@@ -10,6 +10,7 @@ from .nuTools.nttoolbox import ntToolBox
 from .nuTools.nttooloptions import ntToolOptions
 from . import variables
 import xml.etree.ElementTree as ET
+from .settings_dialog import MorandiSettingsDialog
 
 class Redesign(Extension):
 
