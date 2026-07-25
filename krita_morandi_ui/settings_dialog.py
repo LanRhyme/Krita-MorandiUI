@@ -331,8 +331,11 @@ class MorandiSettingsDialog(QDialog):
 
     def apply_gallery_preset(self, g_name, g_data):
         self.current_accent = g_data["hl"]
+        self.custom_accent = g_data["hl"]
         self.current_bg = g_data["bg"]
+        self.custom_bg = g_data["bg"]
         self.current_alt = g_data["alt"]
+        self.custom_alt = g_data["alt"]
         self.current_radius = g_data.get("radius", 8)
 
         self.update_btn_color(self.accent_btn, self.current_accent)

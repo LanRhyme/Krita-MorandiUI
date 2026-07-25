@@ -358,12 +358,28 @@ def buildFlatTheme():
             background-color: #{highlight};
         }}
         QSpinBox::up-arrow, QDoubleSpinBox::up-arrow, QAbstractSpinBox::up-arrow {{
-            width: 7px;
-            height: 7px;
+            image: none;
+            width: 0px;
+            height: 0px;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-bottom: 5px solid #{active_text_color};
+            margin-left: -1px;
         }}
         QSpinBox::down-arrow, QDoubleSpinBox::down-arrow, QAbstractSpinBox::down-arrow {{
-            width: 7px;
-            height: 7px;
+            image: none;
+            width: 0px;
+            height: 0px;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-top: 5px solid #{active_text_color};
+            margin-left: -1px;
+        }}
+        QSpinBox::up-button:hover QSpinBox::up-arrow, QDoubleSpinBox::up-button:hover QDoubleSpinBox::up-arrow {{
+            border-bottom-color: #{background};
+        }}
+        QSpinBox::down-button:hover QSpinBox::down-arrow, QDoubleSpinBox::down-button:hover QDoubleSpinBox::down-arrow {{
+            border-top-color: #{background};
         }}
         QTabWidget::pane {{
             border: none;

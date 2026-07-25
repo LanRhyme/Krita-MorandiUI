@@ -9,7 +9,7 @@ Application = Krita.instance()
 from .nuTools.nttoolbox import ntToolBox
 from .nuTools.nttooloptions import ntToolOptions
 from . import variables
-from .settings_dialog import MorandiSettingsDialog
+import xml.etree.ElementTree as ET
 
 class Redesign(Extension):
 
@@ -56,19 +56,35 @@ class Redesign(Extension):
         doc = Application.activeDocument()
         if doc:
             doc_key = doc.fileName() if doc.fileName() else str(id(doc))
-            current_sec = self.doc_edit_times.get(doc_key, 0) + 1
-            self.doc_edit_times[doc_key] = current_sec
+            
+            # Fetch base total editing time from Krita's documentInfo XML
+            base_sec = 0
+            try:
+                info_xml = doc.documentInfo()
+                if info_xml:
+                    root = ET.fromstring(info_xml)
+                    for elem in root.iter():
+                        if elem.tag.endswith("editing-time"):
+                            base_sec = int(elem.text)
+                            break
+            except Exception:
+                base_sec = 0
 
-            h = current_sec // 3600
-            m = (current_sec % 3600) // 60
-            s = current_sec % 60
+            session_sec = self.doc_edit_times.get(doc_key, 0) + 1
+            self.doc_edit_times[doc_key] = session_sec
+
+            total_sec = base_sec + session_sec
+
+            h = total_sec // 3600
+            m = (total_sec % 3600) // 60
+            s = total_sec % 60
             time_str = f"{h:02d}:{m:02d}:{s:02d}"
 
             if self.statusTimeLabel:
-                self.statusTimeLabel.setText(f"编辑时长: {time_str}")
+                self.statusTimeLabel.setText(f"总编辑时长: {time_str}")
         else:
             if self.statusTimeLabel:
-                self.statusTimeLabel.setText("编辑时长: --:--:--")
+                self.statusTimeLabel.setText("总编辑时长: --:--:--")
 
     def loadColorSettings(self):
         accent_preset = Application.readSetting("Redesign", "accentPreset", "鸢尾紫 (Iris)")
