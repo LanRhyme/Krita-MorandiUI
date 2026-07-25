@@ -1117,3 +1117,25 @@ def importPresetJSON(source_path):
     sb = data.get("scrollbar_width", 6)
     op = data.get("nu_opacity", 90)
     setColors(hl, bg, alt, act, inact, rad, sb, op)
+
+def exportKritaGPLPalette(target_path=None):
+    if not target_path:
+        target_dir = Path.home() / ".local/share/krita/palettes"
+        target_dir.mkdir(parents=True, exist_ok=True)
+        file_path = target_dir / "Morandi_Palette_Gallery.gpl"
+    else:
+        file_path = Path(target_path)
+
+    lines = ["GIMP Palette", "Name: Morandi Palette Gallery", "Columns: 6", "#"]
+    
+    for g_name, g_data in GALLERY_PRESETS.items():
+        for key in ["hl", "bg", "alt"]:
+            hex_c = g_data[key].lstrip("#")
+            r = int(hex_c[0:2], 16)
+            g = int(hex_c[2:4], 16)
+            b = int(hex_c[4:6], 16)
+            tag = f"{g_name} ({key.upper()})"
+            lines.append(f"{r:3d} {g:3d} {b:3d}\t{tag}")
+
+    file_path.write_text("\n".join(lines), encoding="utf-8")
+    return str(file_path)

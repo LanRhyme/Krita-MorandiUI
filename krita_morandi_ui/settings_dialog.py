@@ -286,8 +286,12 @@ class MorandiSettingsDialog(QDialog):
         self.btn_export_colors_file = QPushButton("导出 .colors 文件...")
         self.btn_export_colors_file.clicked.connect(self.export_colors_to_file)
 
+        self.btn_export_gpl = QPushButton("导出莫兰迪绘画色板 (.gpl)")
+        self.btn_export_gpl.clicked.connect(self.export_gpl_palette)
+
         exp_btn_box.addWidget(self.btn_gen_internal)
         exp_btn_box.addWidget(self.btn_export_colors_file)
+        exp_btn_box.addWidget(self.btn_export_gpl)
 
         exp_group.layout().addRow(exp_btn_box)
         advanced_layout.addWidget(exp_group)
@@ -444,6 +448,10 @@ class MorandiSettingsDialog(QDialog):
         if file_path:
             variables.saveColorSchemeFile(name, target_path=file_path)
             QMessageBox.information(self, "导出成功", f"主题文件已保存至:\n{file_path}")
+
+    def export_gpl_palette(self):
+        file_path = variables.exportKritaGPLPalette()
+        QMessageBox.information(self, "色板导出成功", f"全套 12 款莫兰迪画板色板已成功导出并自动安装至 Krita 调色板库:\n{file_path}\n\n您可以在 Krita 的'调色板 (Color Swatches)'面板中选择 Morandi Palette Gallery 随时选用莫兰迪绘画配色！")
 
     def apply_changes(self):
         self.ext.usesFlatTheme = self.cb_flat.isChecked()
