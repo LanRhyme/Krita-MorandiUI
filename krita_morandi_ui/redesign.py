@@ -1,26 +1,16 @@
 """
     Plugin for Krita UI Redesign, Copyright (C) 2020 Kapyia, Pedro Reis
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+    Customized and Enhanced Morandi Theme Engine (C) 2026 LanRhyme
 """
 
 from .qt_compat import *
 from krita import *
+Application = Krita.instance()
 from .nuTools.nttoolbox import ntToolBox
 from .nuTools.nttooloptions import ntToolOptions
 from . import variables
-    
+from .settings_dialog import MorandiSettingsDialog
+
 class Redesign(Extension):
 
     usesFlatTheme = False
@@ -30,7 +20,7 @@ class Redesign(Extension):
     usesNuToolOptions = False
     ntTB = None
     ntTO = None
- 
+
     def __init__(self, parent):
         super().__init__(parent)
 
@@ -46,22 +36,65 @@ class Redesign(Extension):
 
         if Application.readSetting("Redesign", "usesNuToolbox", "true") == "true":
             self.usesNuToolbox = True
-        
+
         if Application.readSetting("Redesign", "usesNuToolOptions", "true") == "true":
             self.usesNuToolOptions = True
 
-    def createActions(self, window):
-        actions = []
+        # Load initial color & style settings
+        self.loadColorSettings()
 
+    def loadColorSettings(self):
+        accent_preset = Application.readSetting("Redesign", "accentPreset", "鸢尾紫 (Iris)")
+        custom_accent = Application.readSetting("Redesign", "customAccent", "8c829e")
+        tone_preset = Application.readSetting("Redesign", "tonePreset", "经典深色莫兰迪 (Dark Morandi)")
+        custom_bg = Application.readSetting("Redesign", "customBg", "21201c")
+        custom_alt = Application.readSetting("Redesign", "customAlt", "2c2b26")
+        radius_preset = Application.readSetting("Redesign", "radiusPreset", "标准经典 (12px)")
+        scrollbar_preset = Application.readSetting("Redesign", "scrollbarPreset", "标准 Standard (8px)")
+        nu_opacity = int(Application.readSetting("Redesign", "nuOpacity", "90"))
+
+        if accent_preset in variables.ACCENT_PRESETS and variables.ACCENT_PRESETS[accent_preset] != "custom":
+            hl = variables.ACCENT_PRESETS[accent_preset]
+        else:
+            hl = custom_accent
+
+        if tone_preset in variables.TONE_PRESETS and variables.TONE_PRESETS[tone_preset] != ("custom", "custom"):
+            bg, alt = variables.TONE_PRESETS[tone_preset]
+        else:
+            bg, alt = custom_bg, custom_alt
+
+        r = variables.RADIUS_PRESETS.get(radius_preset, 12)
+        sb = variables.SCROLLBAR_PRESETS.get(scrollbar_preset, 8)
+
+        variables.setColors(hl, bg, alt, radius=r, scrollbar=sb, opacity=nu_opacity)
+
+    def createActions(self, window):
+        menu = window.qwindow().menuBar().addMenu("莫兰迪UI")
+
+        action_settings = window.createAction("morandiSettings", "设置与外观微调...", "")
+        action_settings.triggered.connect(self.openSettingsDialog)
+        menu.addAction(action_settings)
+
+        action_export = window.createAction("morandiExportColors", "导出当前主题方案 (.colors)", "")
+        action_export.triggered.connect(self.exportColorsFile)
+        menu.addAction(action_export)
+
+        action_json = window.createAction("morandiJsonPreset", "导入/导出配色预设 (JSON)", "")
+        action_json.triggered.connect(self.importExportJSONPreset)
+        menu.addAction(action_json)
+
+        menu.addSeparator()
+
+        actions = []
         actions.append(window.createAction("toolbarBorder", "无边框工具栏", ""))
         actions[0].setCheckable(True)
-        actions[0].setChecked(self.usesBorderlessToolbar) 
+        actions[0].setChecked(self.usesBorderlessToolbar)
 
         actions.append(window.createAction("tabHeight", "细长文档标签", ""))
         actions[1].setCheckable(True)
         actions[1].setChecked(self.usesThinDocumentTabs)
 
-        actions.append(window.createAction("flatTheme", "启用扁平主题", ""))
+        actions.append(window.createAction("flatTheme", "启用扁平外观", ""))
         actions[2].setCheckable(True)
         actions[2].setChecked(self.usesFlatTheme)
 
@@ -75,8 +108,6 @@ class Redesign(Extension):
         if Application.readSetting("", "ToolOptionsInDocker", "false") == "true":
             actions[4].setChecked(self.usesNuToolOptions)
 
-        menu = window.qwindow().menuBar().addMenu("莫兰迪UI")
-
         for a in actions:
             menu.addAction(a)
 
@@ -88,41 +119,44 @@ class Redesign(Extension):
 
         variables.buildFlatTheme()
 
-        if (self.usesNuToolOptions and
-            Application.readSetting("", "ToolOptionsInDocker", "false") == "true"):
-                self.ntTO = ntToolOptions(window)
+        if (self.usesNuToolOptions and Application.readSetting("", "ToolOptionsInDocker", "false") == "true"):
+            self.ntTO = ntToolOptions(window)
 
-        if self.usesNuToolbox: 
+        if self.usesNuToolbox:
             self.ntTB = ntToolBox(window)
 
         self.rebuildStyleSheet(window.qwindow())
 
-        #self.nuToolOptionsToggled(self.usesNuToolOptions)
-        #self.nuToolOptionsToggled(self.usesNuToolOptions)
+    def openSettingsDialog(self):
+        win = Application.activeWindow().qwindow()
+        dlg = MorandiSettingsDialog(win, self)
+        exec_dialog(dlg)
+
+    def exportColorsFile(self):
+        file_path, _ = QFileDialog.getSaveFileName(Application.activeWindow().qwindow(), "导出 Krita 主题文件 (.colors)", "Morandi-Custom.colors", "KDE Color Schemes (*.colors)")
+        if file_path:
+            variables.saveColorSchemeFile("Morandi-Custom", target_path=file_path)
+            msg = QMessageBox()
+            msg.setText(f"主题文件已导出至:\n{file_path}")
+            exec_dialog(msg)
+
+    def importExportJSONPreset(self):
+        self.openSettingsDialog()
 
     def toolbarBorderToggled(self, toggled):
         Application.writeSetting("Redesign", "usesBorderlessToolbar", str(toggled).lower())
-
         self.usesBorderlessToolbar = toggled
-
         self.rebuildStyleSheet(Application.activeWindow().qwindow())
-
 
     def flatThemeToggled(self, toggled):
         Application.writeSetting("Redesign", "usesFlatTheme", str(toggled).lower())
-
         self.usesFlatTheme = toggled
-
         self.rebuildStyleSheet(Application.activeWindow().qwindow())
 
-    
     def tabHeightToggled(self, toggled):
         Application.instance().writeSetting("Redesign", "usesThinDocumentTabs", str(toggled).lower())
-
         self.usesThinDocumentTabs = toggled
-
         self.rebuildStyleSheet(Application.activeWindow().qwindow())
-
 
     def nuToolboxToggled(self, toggled):
         Application.writeSetting("Redesign", "usesNuToolbox", str(toggled).lower())
@@ -130,7 +164,7 @@ class Redesign(Extension):
 
         if toggled:
             self.ntTB = ntToolBox(Application.activeWindow())
-            self.ntTB.pad.show() 
+            self.ntTB.pad.show()
             self.ntTB.updateStyleSheet()
         elif not toggled and self.ntTB:
             self.ntTB.close()
@@ -143,7 +177,7 @@ class Redesign(Extension):
 
             if toggled:
                 self.ntTO = ntToolOptions(Application.activeWindow())
-                self.ntTO.pad.show() 
+                self.ntTO.pad.show()
                 self.ntTO.updateStyleSheet()
             elif not toggled and self.ntTO:
                 self.ntTO.close()
@@ -153,14 +187,30 @@ class Redesign(Extension):
             msg.setText("悬浮工具选项功能需要将工具选项位置设置为'停靠区内'。\n\n" +
                         "您可以在 设置 -> 配置 Krita... -> 常规 -> 工具 -> 工具选项位置 中更改。" +
                         "更改完成后，请重启 Krita。")
-            msg.exec_()
-
+            exec_dialog(msg)
 
     def rebuildStyleSheet(self, window):
+        app = QApplication.instance()
+        if app:
+            palette = app.palette()
+            palette.setColor(QPalette.ColorRole.Window, QColor("#" + variables.background))
+            palette.setColor(QPalette.ColorRole.WindowText, QColor("#" + variables.active_text_color))
+            palette.setColor(QPalette.ColorRole.Base, QColor("#" + variables.background))
+            palette.setColor(QPalette.ColorRole.AlternateBase, QColor("#" + variables.alternate))
+            palette.setColor(QPalette.ColorRole.ToolTipBase, QColor("#" + variables.background))
+            palette.setColor(QPalette.ColorRole.ToolTipText, QColor("#" + variables.active_text_color))
+            palette.setColor(QPalette.ColorRole.Text, QColor("#" + variables.active_text_color))
+            palette.setColor(QPalette.ColorRole.Button, QColor("#" + variables.background))
+            palette.setColor(QPalette.ColorRole.ButtonText, QColor("#" + variables.active_text_color))
+            palette.setColor(QPalette.ColorRole.Highlight, QColor("#" + variables.highlight))
+            palette.setColor(QPalette.ColorRole.HighlightedText, QColor("#" + variables.background))
+            app.setPalette(palette)
+
         full_style_sheet = ""
-        
+
         # Dockers
         if self.usesFlatTheme:
+            full_style_sheet += f"\n {variables.scrollbar_css} \n"
             full_style_sheet += f"\n {variables.flat_dock_style} \n"
             full_style_sheet += f"\n {variables.flat_button_style} \n"
             full_style_sheet += f"\n {variables.flat_main_window_style} \n"
@@ -173,13 +223,11 @@ class Redesign(Extension):
         if self.usesFlatTheme:
             full_style_sheet += f"\n {variables.flat_toolbar_style} \n"
         elif self.usesBorderlessToolbar:
-            full_style_sheet += f"\n {variables.no_borders_style} \n"    
-        
-        window.setStyleSheet(full_style_sheet)
+            full_style_sheet += f"\n {variables.no_borders_style} \n"
 
-        #print("\n\n")
-        #print(full_style_sheet)
-        #print("\n\n")
+        window.setStyleSheet(full_style_sheet)
+        if app:
+            app.setStyleSheet(full_style_sheet)
 
         # Overview
         overview = window.findChild(QWidget, 'OverviewDocker')
@@ -195,23 +243,19 @@ class Redesign(Extension):
         canvas_style_sheet = ""
 
         if self.usesFlatTheme:
-            # Keep tab styling local to the canvas/doc area. Applying it
-            # globally affects dock/tab containers in Krita 5+.
             canvas_style_sheet += f"\n {variables.flat_tab_base_style} \n"
             if self.usesThinDocumentTabs:
                 canvas_style_sheet += f"\n {variables.flat_tab_small_style} \n"
-            else: 
+            else:
                 canvas_style_sheet += f"\n {variables.flat_tab_big_style} \n"
-        else: 
+        else:
             if self.usesThinDocumentTabs:
                 canvas_style_sheet += f"\n {variables.small_tab_style} \n"
 
         canvas = window.centralWidget()
-        canvas.setStyleSheet(canvas_style_sheet)
-
-        # This is ugly, but it's the least ugly way I can get the canvas to 
-        # update it's size (for now)
-        canvas.resize(canvas.sizeHint())
+        if canvas:
+            canvas.setStyleSheet(canvas_style_sheet)
+            canvas.resize(canvas.sizeHint())
 
         # Update Tool Options stylesheet
         if self.usesNuToolOptions and self.ntTO:
@@ -219,6 +263,6 @@ class Redesign(Extension):
 
         # Update Toolbox stylesheet
         if self.usesNuToolbox and self.ntTB:
-            self.ntTB.updateStyleSheet()  
+            self.ntTB.updateStyleSheet()
 
 Krita.instance().addExtension(Redesign(Krita.instance()))
