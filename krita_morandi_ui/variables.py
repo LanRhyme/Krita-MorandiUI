@@ -364,7 +364,7 @@ def buildFlatTheme():
             color: #{active_text_color};
             border: none !important;
             border-radius: {r}px;
-            padding: 1px 16px 1px 6px;
+            padding: 1px 14px 1px 4px;
             selection-background-color: #{highlight};
             selection-color: #{background};
         }}
