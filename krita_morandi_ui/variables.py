@@ -997,9 +997,21 @@ def buildFlatTheme():
         background-color: #{alternate} !important;
         border-radius: {r_sm}px;
     }}
+    /* Layer Nesting Tree Guide Lines */
     KisNodeView::branch {{
         background-color: transparent;
-        border: none !important;
+        border: none;
+    }}
+    KisNodeView::branch:has-siblings:!adjoins-item {{
+        border-left: 1px solid #{alternate};
+    }}
+    KisNodeView::branch:has-siblings:adjoins-item {{
+        border-left: 1px solid #{alternate};
+        border-bottom: 1px solid #{alternate};
+    }}
+    KisNodeView::branch:!has-children:!has-siblings:adjoins-item {{
+        border-left: 1px solid #{alternate};
+        border-bottom: 1px solid #{alternate};
     }}
     KisNodeView::branch:has-children:!has-siblings:closed,
     KisNodeView::branch:closed:has-children:has-siblings {{
