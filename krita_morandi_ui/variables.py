@@ -340,46 +340,33 @@ def buildFlatTheme():
         QSpinBox::up-button, QDoubleSpinBox::up-button, QAbstractSpinBox::up-button {{
             subcontrol-origin: border;
             subcontrol-position: top right;
-            width: 18px;
+            width: 16px;
             border: none !important;
             background: transparent;
-            border-top-right-radius: {r}px;
+            margin-right: 2px;
+            margin-top: 2px;
         }}
         QSpinBox::down-button, QDoubleSpinBox::down-button, QAbstractSpinBox::down-button {{
             subcontrol-origin: border;
             subcontrol-position: bottom right;
-            width: 18px;
+            width: 16px;
             border: none !important;
             background: transparent;
-            border-bottom-right-radius: {r}px;
+            margin-right: 2px;
+            margin-bottom: 2px;
         }}
         QSpinBox::up-button:hover, QDoubleSpinBox::up-button:hover, QAbstractSpinBox::up-button:hover,
         QSpinBox::down-button:hover, QDoubleSpinBox::down-button:hover, QAbstractSpinBox::down-button:hover {{
             background-color: #{highlight};
+            border-radius: 3px;
         }}
         QSpinBox::up-arrow, QDoubleSpinBox::up-arrow, QAbstractSpinBox::up-arrow {{
-            image: none;
-            width: 0px;
-            height: 0px;
-            border-left: 4px solid transparent;
-            border-right: 4px solid transparent;
-            border-bottom: 5px solid #{active_text_color};
-            margin-left: -1px;
+            width: 9px;
+            height: 9px;
         }}
         QSpinBox::down-arrow, QDoubleSpinBox::down-arrow, QAbstractSpinBox::down-arrow {{
-            image: none;
-            width: 0px;
-            height: 0px;
-            border-left: 4px solid transparent;
-            border-right: 4px solid transparent;
-            border-top: 5px solid #{active_text_color};
-            margin-left: -1px;
-        }}
-        QSpinBox::up-button:hover QSpinBox::up-arrow, QDoubleSpinBox::up-button:hover QDoubleSpinBox::up-arrow {{
-            border-bottom-color: #{background};
-        }}
-        QSpinBox::down-button:hover QSpinBox::down-arrow, QDoubleSpinBox::down-button:hover QDoubleSpinBox::down-arrow {{
-            border-top-color: #{background};
+            width: 9px;
+            height: 9px;
         }}
         QTabWidget::pane {{
             border: none;

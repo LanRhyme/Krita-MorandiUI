@@ -54,38 +54,49 @@ class Redesign(Extension):
         self.timer.start(1000)
 
     def updateDocEditTime(self):
-        doc = Application.activeDocument()
-        if doc:
-            doc_key = doc.fileName() if doc.fileName() else str(id(doc))
-            
-            # Fetch base total editing time from Krita's documentInfo XML
-            base_sec = 0
-            try:
-                info_xml = doc.documentInfo()
-                if info_xml:
-                    root = ET.fromstring(info_xml)
-                    for elem in root.iter():
-                        if elem.tag.endswith("editing-time"):
-                            base_sec = int(elem.text)
-                            break
-            except Exception:
+        try:
+            doc = Application.activeDocument()
+            win = Application.activeWindow()
+            qwin = win.qwindow() if win else None
+
+            if doc and qwin:
+                doc_key = doc.fileName() if doc.fileName() else str(id(doc))
+                
+                # Fetch base total editing time from Krita's documentInfo XML
                 base_sec = 0
+                try:
+                    info_xml = doc.documentInfo()
+                    if info_xml:
+                        root = ET.fromstring(info_xml)
+                        for elem in root.iter():
+                            if elem.tag.endswith("editing-time"):
+                                base_sec = int(elem.text)
+                                break
+                except Exception:
+                    base_sec = 0
 
-            session_sec = self.doc_edit_times.get(doc_key, 0) + 1
-            self.doc_edit_times[doc_key] = session_sec
+                # Only increment session time if Krita active window currently has focus
+                session_sec = self.doc_edit_times.get(doc_key, 0)
+                if qwin.isActiveWindow():
+                    session_sec += 1
+                    self.doc_edit_times[doc_key] = session_sec
 
-            total_sec = base_sec + session_sec
+                total_sec = base_sec + session_sec
 
-            h = total_sec // 3600
-            m = (total_sec % 3600) // 60
-            s = total_sec % 60
-            time_str = f"{h:02d}:{m:02d}:{s:02d}"
+                h = total_sec // 3600
+                m = (total_sec % 3600) // 60
+                s = total_sec % 60
+                time_str = f"{h:02d}:{m:02d}:{s:02d}"
 
-            if self.statusTimeLabel:
-                self.statusTimeLabel.setText(f"总编辑时长: {time_str}")
-        else:
-            if self.statusTimeLabel:
-                self.statusTimeLabel.setText("总编辑时长: --:--:--")
+                if self.statusTimeLabel:
+                    self.statusTimeLabel.setText(f"总编辑时长: {time_str}")
+            else:
+                if self.statusTimeLabel:
+                    self.statusTimeLabel.setText("总编辑时长: --:--:--")
+        except (RuntimeError, AttributeError):
+            self.statusTimeLabel = None
+            if self.timer:
+                self.timer.stop()
 
     def loadColorSettings(self):
         accent_preset = Application.readSetting("Redesign", "accentPreset", "鸢尾紫 (Iris)")
