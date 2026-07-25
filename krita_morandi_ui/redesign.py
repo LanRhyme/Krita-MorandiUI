@@ -66,7 +66,12 @@ class Redesign(Extension):
         r = variables.RADIUS_PRESETS.get(radius_preset, 12)
         sb = variables.SCROLLBAR_PRESETS.get(scrollbar_preset, 8)
 
-        variables.setColors(hl, bg, alt, radius=r, scrollbar=sb, opacity=nu_opacity)
+        title_style = Application.readSetting("Redesign", "dockerTitleStyle", "minimalist")
+        focus_hl = Application.readSetting("Redesign", "enableFocusHighlight", "true") == "true"
+        custom_qss = Application.readSetting("Redesign", "customQSS", "")
+
+        variables.setColors(hl, bg, alt, radius=r, scrollbar=sb, opacity=nu_opacity,
+                            title_style=title_style, focus_hl=focus_hl, user_qss=custom_qss)
 
     def createActions(self, window):
         menu = window.qwindow().menuBar().addMenu("莫兰迪UI")
@@ -218,6 +223,8 @@ class Redesign(Extension):
             full_style_sheet += f"\n {variables.flat_combo_box_style} \n"
             full_style_sheet += f"\n {variables.flat_status_bar_style} \n"
             full_style_sheet += f"\n {variables.flat_tree_view_style} \n"
+            if variables.custom_qss_style:
+                full_style_sheet += f"\n {variables.custom_qss_style} \n"
 
         # Toolbar
         if self.usesFlatTheme:

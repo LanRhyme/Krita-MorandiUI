@@ -63,6 +63,25 @@ SCROLLBAR_PRESETS = {
     "隐藏 Hidden (0px)": 0,
 }
 
+GALLERY_PRESETS = {
+    "北欧苔原 (Nordic Sage)": {"hl": "8fa382", "bg": "212320", "alt": "2b2d2a", "act": "f3f3f2", "inact": "9f9f9f", "radius": 8},
+    "京都晚秋 (Kyoto Autumn)": {"hl": "be7a6b", "bg": "241e1c", "alt": "302724", "act": "f5f2f0", "inact": "a09590", "radius": 8},
+    "暖粘土 (Warm Clay)": {"hl": "c79685", "bg": "262220", "alt": "312c29", "act": "f5f3f0", "inact": "a39b95", "radius": 10},
+    "沙漠玫瑰 (Desert Rose)": {"hl": "c48c90", "bg": "242021", "alt": "2f2a2b", "act": "f4f2f3", "inact": "9f9798", "radius": 8},
+    "石墨夜影 (Cyber Graphite)": {"hl": "8c829e", "bg": "1d1f21", "alt": "282a2d", "act": "f0f2f5", "inact": "90959c", "radius": 6},
+    "薄荷幽谷 (Soft Mint)": {"hl": "78a391", "bg": "1e2321", "alt": "282e2c", "act": "f1f4f2", "inact": "929c97", "radius": 8},
+    "燕麦摩卡 (Mocha Cream)": {"hl": "bfa980", "bg": "25221e", "alt": "302c27", "act": "f6f4f0", "inact": "a29d95", "radius": 8},
+    "雾蓝板岩 (Slate Fog)": {"hl": "7f9bb0", "bg": "202225", "alt": "2b2e33", "act": "f0f3f6", "inact": "939aa3", "radius": 8},
+    "侘寂暮色 (Wabi-Sabi Dusk)": {"hl": "bda572", "bg": "21201d", "alt": "2c2a26", "act": "f4f3ef", "inact": "9e9a90", "radius": 8},
+    "极夜紫灰 (Midnight Plum)": {"hl": "8c829e", "bg": "161618", "alt": "202024", "act": "f3f3f5", "inact": "9898a0", "radius": 4},
+    "莫兰迪暖白 (Warm Light)": {"hl": "7b9c90", "bg": "e6e3dd", "alt": "dcd8d0", "act": "282623", "inact": "787570", "radius": 8},
+    "冷调柔灰 (Cool Light)": {"hl": "7f9bb0", "bg": "e3e4e6", "alt": "d7d9dc", "act": "202225", "inact": "70737a", "radius": 8},
+}
+
+docker_title_style = "minimalist"  # minimalist, hidden, pill
+enable_focus_highlight = True
+custom_qss = ""
+
 no_borders_style = " QToolBar { border: none; background: transparent; } "
 
 scrollbar_css = ""
@@ -84,9 +103,12 @@ nu_toolbox_style = ""
 nu_toggle_button_style = ""
 nu_tool_options_style = ""
 small_tab_style = ""
+custom_qss_style = ""
 
-def setColors(hl_color, bg_color, alt_color, act_text="f3f3f2", inact_text="9f9f9f", radius=8, scrollbar=6, opacity=90):
+def setColors(hl_color, bg_color, alt_color, act_text="f3f3f2", inact_text="9f9f9f", 
+              radius=8, scrollbar=6, opacity=90, title_style="minimalist", focus_hl=True, user_qss=""):
     global highlight, background, alternate, active_text_color, inactive_text_color, border_radius, scrollbar_width, nu_opacity
+    global docker_title_style, enable_focus_highlight, custom_qss
     highlight = hl_color.lstrip("#")
     background = bg_color.lstrip("#")
     alternate = alt_color.lstrip("#")
@@ -95,6 +117,9 @@ def setColors(hl_color, bg_color, alt_color, act_text="f3f3f2", inact_text="9f9f
     border_radius = int(radius)
     scrollbar_width = int(scrollbar)
     nu_opacity = int(opacity)
+    docker_title_style = str(title_style)
+    enable_focus_highlight = bool(focus_hl)
+    custom_qss = str(user_qss)
     buildFlatTheme()
 
 def buildFlatTheme():
@@ -103,7 +128,7 @@ def buildFlatTheme():
     global flat_toolbar_style, flat_menu_bar_style, flat_combo_box_style
     global flat_toolbox_style, flat_status_bar_style, flat_tree_view_style
     global flat_overview_docker_style, nu_toolbox_style, nu_toggle_button_style
-    global nu_tool_options_style, small_tab_style
+    global nu_tool_options_style, small_tab_style, custom_qss_style
 
     r = border_radius
     sb_w = scrollbar_width
