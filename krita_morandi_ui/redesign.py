@@ -21,13 +21,15 @@ class Redesign(Extension):
     usesNuToolOptions = False
     ntTB = None
     ntTO = None
-    doc_edit_times = {}
+    doc_base_sec = {}
+    doc_session_sec = {}
     timer = None
     statusTimeLabel = None
 
     def __init__(self, parent):
         super().__init__(parent)
-        self.doc_edit_times = {}
+        self.doc_base_sec = {}
+        self.doc_session_sec = {}
 
     def setup(self):
         if Application.readSetting("Redesign", "usesFlatTheme", "true") == "true":
@@ -62,26 +64,27 @@ class Redesign(Extension):
             if doc and qwin:
                 doc_key = doc.fileName() if doc.fileName() else str(id(doc))
                 
-                # Fetch base total editing time from Krita's documentInfo XML
-                base_sec = 0
-                try:
-                    info_xml = doc.documentInfo()
-                    if info_xml:
-                        root = ET.fromstring(info_xml)
-                        for elem in root.iter():
-                            if elem.tag.endswith("editing-time"):
-                                base_sec = int(elem.text)
-                                break
-                except Exception:
+                # Fetch base total editing time from Krita's documentInfo XML ONCE per doc
+                if doc_key not in self.doc_base_sec:
                     base_sec = 0
+                    try:
+                        info_xml = doc.documentInfo()
+                        if info_xml:
+                            root = ET.fromstring(info_xml)
+                            for elem in root.iter():
+                                if elem.tag.endswith("editing-time"):
+                                    base_sec = int(elem.text)
+                                    break
+                    except Exception:
+                        base_sec = 0
+                    self.doc_base_sec[doc_key] = base_sec
+                    self.doc_session_sec[doc_key] = 0
 
                 # Only increment session time if Krita active window currently has focus
-                session_sec = self.doc_edit_times.get(doc_key, 0)
                 if qwin.isActiveWindow():
-                    session_sec += 1
-                    self.doc_edit_times[doc_key] = session_sec
+                    self.doc_session_sec[doc_key] += 1
 
-                total_sec = base_sec + session_sec
+                total_sec = self.doc_base_sec[doc_key] + self.doc_session_sec[doc_key]
 
                 h = total_sec // 3600
                 m = (total_sec % 3600) // 60

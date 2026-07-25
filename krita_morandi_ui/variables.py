@@ -341,32 +341,38 @@ def buildFlatTheme():
             subcontrol-origin: border;
             subcontrol-position: top right;
             width: 16px;
+            height: 10px;
             border: none !important;
             background: transparent;
-            margin-right: 2px;
-            margin-top: 2px;
         }}
         QSpinBox::down-button, QDoubleSpinBox::down-button, QAbstractSpinBox::down-button {{
             subcontrol-origin: border;
             subcontrol-position: bottom right;
             width: 16px;
+            height: 10px;
             border: none !important;
             background: transparent;
-            margin-right: 2px;
-            margin-bottom: 2px;
         }}
         QSpinBox::up-button:hover, QDoubleSpinBox::up-button:hover, QAbstractSpinBox::up-button:hover,
         QSpinBox::down-button:hover, QDoubleSpinBox::down-button:hover, QAbstractSpinBox::down-button:hover {{
             background-color: #{highlight};
-            border-radius: 3px;
+            border-radius: 2px;
         }}
         QSpinBox::up-arrow, QDoubleSpinBox::up-arrow, QAbstractSpinBox::up-arrow {{
-            width: 9px;
-            height: 9px;
+            image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='6' viewBox='0 0 8 6'><polygon points='4,0 8,6 0,6' fill='%23{active_text_color}'/></svg>");
+            width: 8px;
+            height: 6px;
         }}
         QSpinBox::down-arrow, QDoubleSpinBox::down-arrow, QAbstractSpinBox::down-arrow {{
-            width: 9px;
-            height: 9px;
+            image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='6' viewBox='0 0 8 6'><polygon points='4,6 8,0 0,0' fill='%23{active_text_color}'/></svg>");
+            width: 8px;
+            height: 6px;
+        }}
+        QSpinBox::up-button:hover QSpinBox::up-arrow, QDoubleSpinBox::up-button:hover QDoubleSpinBox::up-arrow {{
+            image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='6' viewBox='0 0 8 6'><polygon points='4,0 8,6 0,6' fill='%23{background}'/></svg>");
+        }}
+        QSpinBox::down-button:hover QSpinBox::down-arrow, QDoubleSpinBox::down-button:hover QDoubleSpinBox::down-arrow {{
+            image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='6' viewBox='0 0 8 6'><polygon points='4,6 8,0 0,0' fill='%23{background}'/></svg>");
         }}
         QTabWidget::pane {{
             border: none;
