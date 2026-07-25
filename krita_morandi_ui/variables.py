@@ -105,7 +105,7 @@ nu_toggle_button_style = ""
 nu_tool_options_style = ""
 small_tab_style = ""
 custom_qss_style = ""
-def ensureSpinboxIcons(fg_hex, bg_hex):
+def ensureUIAssets(fg_hex, bg_hex):
     res_dir = Path.home() / ".local/share/krita/pykrita/krita_morandi_ui/resources"
     res_dir.mkdir(parents=True, exist_ok=True)
 
@@ -125,17 +125,29 @@ def ensureSpinboxIcons(fg_hex, bg_hex):
   <polygon points="5,7 9,1 1,1" fill="#{bg_hex}"/>
 </svg>'''
 
+    combo_down_svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="10" height="6" viewBox="0 0 10 6">
+  <polygon points="0,0 10,0 5,6" fill="#{fg_hex}"/>
+</svg>'''
+
+    combo_down_hover_svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="10" height="6" viewBox="0 0 10 6">
+  <polygon points="0,0 10,0 5,6" fill="#{bg_hex}"/>
+</svg>'''
+
     p_up = res_dir / "spinbox_up.svg"
     p_down = res_dir / "spinbox_down.svg"
     p_up_h = res_dir / "spinbox_up_hover.svg"
     p_down_h = res_dir / "spinbox_down_hover.svg"
+    p_combo_d = res_dir / "combo_down.svg"
+    p_combo_dh = res_dir / "combo_down_hover.svg"
 
     p_up.write_text(up_svg, encoding="utf-8")
     p_down.write_text(down_svg, encoding="utf-8")
     p_up_h.write_text(up_hover_svg, encoding="utf-8")
     p_down_h.write_text(down_hover_svg, encoding="utf-8")
+    p_combo_d.write_text(combo_down_svg, encoding="utf-8")
+    p_combo_dh.write_text(combo_down_hover_svg, encoding="utf-8")
 
-    return str(p_up), str(p_down), str(p_up_h), str(p_down_h)
+    return str(p_up), str(p_down), str(p_up_h), str(p_down_h), str(p_combo_d), str(p_combo_dh)
 
 def setColors(hl_color, bg_color, alt_color, act_text="f3f3f2", inact_text="9f9f9f", 
               radius=8, scrollbar=6, opacity=90, title_style="minimalist", focus_hl=True, user_qss=""):
@@ -167,7 +179,7 @@ def buildFlatTheme():
     r_sm = max(2, r // 2)
     r_lg = r + 4
 
-    p_up, p_down, p_up_h, p_down_h = ensureSpinboxIcons(active_text_color, background)
+    p_up, p_down, p_up_h, p_down_h, p_combo_d, p_combo_dh = ensureUIAssets(active_text_color, background)
 
     small_tab_style = "QTabBar::tab { height: " + str(small_tab_size) + "px; }"
 
@@ -678,7 +690,7 @@ def buildFlatTheme():
             color: #{active_text_color};
             border: none;
             border-radius: {r}px;
-            padding: 4px 12px;
+            padding: 3px 22px 3px 8px;
         }}
         QComboBox:hover {{
             background-color: #{highlight};
@@ -689,7 +701,15 @@ def buildFlatTheme():
             background: transparent;
             subcontrol-origin: padding;
             subcontrol-position: top right;
-            width: 16px;
+            width: 18px;
+        }}
+        QComboBox::down-arrow {{
+            image: url('{p_combo_d}');
+            width: 8px;
+            height: 5px;
+        }}
+        QComboBox:hover QComboBox::down-arrow {{
+            image: url('{p_combo_dh}');
         }}
         QComboBox QAbstractItemView {{
             background-color: #{background};
@@ -698,6 +718,7 @@ def buildFlatTheme():
             selection-background-color: #{highlight};
             selection-color: #{background};
             outline: none;
+            padding: 4px;
         }}
     """
 
@@ -863,6 +884,17 @@ def buildFlatTheme():
         #toolOptionsPad QSpinBox:focus,
         #toolOptionsPad QDoubleSpinBox:focus {{
             border: 1px solid #{highlight} !important;
+        }}
+        #toolOptionsPad QComboBox {{
+            padding: 3px 22px 3px 8px;
+        }}
+        #toolOptionsPad QComboBox::down-arrow {{
+            image: url('{p_combo_d}');
+            width: 8px;
+            height: 5px;
+        }}
+        #toolOptionsPad QComboBox:hover QComboBox::down-arrow {{
+            image: url('{p_combo_dh}');
         }}
         #toolOptionsPad QTreeView, 
         #toolOptionsPad QListView, 
