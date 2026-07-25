@@ -359,14 +359,29 @@ def buildFlatTheme():
             border-bottom: none !important;
             padding: 4px;
         }}
-        QLineEdit, QSpinBox, QDoubleSpinBox, KisDoubleSliderSpinBox, QAbstractSpinBox {{
+        QLineEdit {{
             background: #{alternate};
             color: #{active_text_color};
             border: none !important;
             border-radius: {r}px;
-            padding: 1px 14px 1px 4px;
+            padding: 1px 4px;
             selection-background-color: #{highlight};
             selection-color: #{background};
+        }}
+        QSpinBox, QDoubleSpinBox, KisDoubleSliderSpinBox, QAbstractSpinBox {{
+            background: #{alternate};
+            color: #{active_text_color};
+            border: none !important;
+            border-radius: {r}px;
+            padding: 1px 0px 1px 3px;
+            selection-background-color: #{highlight};
+            selection-color: #{background};
+        }}
+        QSpinBox QLineEdit, QDoubleSpinBox QLineEdit, QAbstractSpinBox QLineEdit {{
+            background: transparent;
+            padding: 0px;
+            margin: 0px;
+            border: none;
         }}
         QLineEdit:focus, QSpinBox:focus, QDoubleSpinBox:focus, KisDoubleSliderSpinBox:focus, QAbstractSpinBox:focus {{
             border: 1px solid #{highlight} !important;
@@ -797,14 +812,80 @@ def buildFlatTheme():
         #toolOptionsPad {{
             background-color: #{op_hex}{background};
             border-radius: {r_lg}px;
-            border: none;
+            border: 1px solid #{op_hex}{alternate};
         }}
-        #toolOptionsPad > QWidget, #toolOptionsPad QScrollArea, #toolOptionsPad QScrollArea > QWidget {{
+        #toolOptionsPad QWidget, 
+        #toolOptionsPad QScrollArea, 
+        #toolOptionsPad #qt_scrollarea_viewport,
+        #toolOptionsPad QStackedWidget,
+        #toolOptionsPad QFrame,
+        #toolOptionsPad QDockWidget,
+        #toolOptionsPad QDockWidget > * {{
             background-color: transparent;
-            border-radius: {r_lg}px;
+            border: none !important;
+        }}
+        #toolOptionsPad QGroupBox {{
+            background-color: #{op_hex}{alternate};
+            border-radius: {r}px;
+            margin-top: 14px;
+            padding-top: 10px;
             border: none;
         }}
-        """
+        #toolOptionsPad QTabWidget::pane {{
+            background-color: transparent;
+            border: none;
+        }}
+        #toolOptionsPad QTabBar::tab:!selected {{
+            background-color: transparent;
+            color: #{inactive_text_color};
+            border: none;
+        }}
+        #toolOptionsPad QTabBar::tab:selected {{
+            background-color: #{op_hex}{alternate};
+            color: #{active_text_color};
+            border-bottom: 2px solid #{highlight};
+            border-radius: {r_sm}px;
+        }}
+        #toolOptionsPad QLineEdit,
+        #toolOptionsPad QComboBox,
+        #toolOptionsPad QSpinBox,
+        #toolOptionsPad QDoubleSpinBox,
+        #toolOptionsPad KisDoubleSliderSpinBox,
+        #toolOptionsPad QAbstractSpinBox,
+        #toolOptionsPad QPushButton {{
+            background-color: #{op_hex}{alternate};
+            color: #{active_text_color};
+            border-radius: {r}px;
+            border: none;
+        }}
+        #toolOptionsPad QLineEdit:focus,
+        #toolOptionsPad QComboBox:focus,
+        #toolOptionsPad QSpinBox:focus,
+        #toolOptionsPad QDoubleSpinBox:focus {{
+            border: 1px solid #{highlight} !important;
+        }}
+        #toolOptionsPad QTreeView, 
+        #toolOptionsPad QListView, 
+        #toolOptionsPad KisResourceItemListView, 
+        #toolOptionsPad KisNodeView, 
+        #toolOptionsPad QListWidget, 
+        #toolOptionsPad QTableView {{
+            background-color: transparent;
+            border: none !important;
+        }}
+        #toolOptionsPad QToolButton {{
+            background-color: transparent;
+            border-radius: {r_sm}px;
+            border: none;
+        }}
+        #toolOptionsPad QToolButton:hover {{
+            background-color: #{op_hex}{alternate};
+        }}
+        #toolOptionsPad QToolButton:checked {{
+            background-color: #{highlight};
+            color: #{background};
+        }}
+    """
 
     custom_qss_style = custom_qss
 
