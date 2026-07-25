@@ -443,16 +443,16 @@ def buildFlatTheme():
         }}
         QSlider::groove:horizontal {{
             background: #{alternate};
-            height: 4px;
-            border-radius: 2px;
+            height: 2px;
+            border-radius: 1px;
             border: none;
         }}
         QSlider::handle:horizontal {{
             background: #{highlight};
-            width: 14px;
-            height: 14px;
-            margin: -5px 0;
-            border-radius: 7px;
+            width: 10px;
+            height: 10px;
+            margin: -4px 0;
+            border-radius: 5px;
             border: none;
         }}
         QSlider::handle:horizontal:hover {{
@@ -460,16 +460,28 @@ def buildFlatTheme():
         }}
         QSlider::sub-page:horizontal {{
             background: #{highlight};
-            border-radius: 2px;
+            border-radius: 1px;
         }}
         QSlider::add-page:horizontal {{
             background: #{alternate};
-            border-radius: 2px;
+            border-radius: 1px;
         }}
-        KisDoubleSliderSpinBox {{
+        KisDoubleSliderSpinBox, KisSliderSpinBox {{
             background: #{alternate};
             border: none;
-            border-radius: {r}px;
+            border-radius: {r_sm}px;
+            max-height: 20px;
+            padding: 1px 4px;
+        }} 
+        KisDoubleSliderSpinBox QProgressBar, KisSliderSpinBox QProgressBar {{
+            background-color: #{alternate};
+            max-height: 2px;
+            border-radius: 1px;
+            border: none;
+        }}
+        KisDoubleSliderSpinBox QProgressBar::chunk, KisSliderSpinBox QProgressBar::chunk {{
+            background-color: #{highlight};
+            border-radius: 1px;
         }} 
         QCheckBox, QRadioButton {{
             color: #{active_text_color};
