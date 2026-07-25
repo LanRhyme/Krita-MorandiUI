@@ -102,8 +102,37 @@ flat_overview_docker_style = ""
 nu_toolbox_style = ""
 nu_toggle_button_style = ""
 nu_tool_options_style = ""
-small_tab_style = ""
-custom_qss_style = ""
+def ensureSpinboxIcons(fg_hex, bg_hex):
+    res_dir = Path.home() / ".local/share/krita/pykrita/krita_morandi_ui/resources"
+    res_dir.mkdir(parents=True, exist_ok=True)
+
+    up_svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="10" height="8" viewBox="0 0 10 8">
+  <polygon points="5,1 9,7 1,7" fill="#{fg_hex}"/>
+</svg>'''
+
+    down_svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="10" height="8" viewBox="0 0 10 8">
+  <polygon points="5,7 9,1 1,1" fill="#{fg_hex}"/>
+</svg>'''
+
+    up_hover_svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="10" height="8" viewBox="0 0 10 8">
+  <polygon points="5,1 9,7 1,7" fill="#{bg_hex}"/>
+</svg>'''
+
+    down_hover_svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="10" height="8" viewBox="0 0 10 8">
+  <polygon points="5,7 9,1 1,1" fill="#{bg_hex}"/>
+</svg>'''
+
+    p_up = res_dir / "spinbox_up.svg"
+    p_down = res_dir / "spinbox_down.svg"
+    p_up_h = res_dir / "spinbox_up_hover.svg"
+    p_down_h = res_dir / "spinbox_down_hover.svg"
+
+    p_up.write_text(up_svg, encoding="utf-8")
+    p_down.write_text(down_svg, encoding="utf-8")
+    p_up_h.write_text(up_hover_svg, encoding="utf-8")
+    p_down_h.write_text(down_hover_svg, encoding="utf-8")
+
+    return str(p_up), str(p_down), str(p_up_h), str(p_down_h)
 
 def setColors(hl_color, bg_color, alt_color, act_text="f3f3f2", inact_text="9f9f9f", 
               radius=8, scrollbar=6, opacity=90, title_style="minimalist", focus_hl=True, user_qss=""):
