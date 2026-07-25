@@ -535,7 +535,6 @@ def buildFlatTheme():
             background: #{alternate};
             border: none;
             border-radius: {r_sm}px;
-            max-height: 20px;
             padding: 1px 4px;
         }} 
         KisDoubleSliderSpinBox QProgressBar, KisSliderSpinBox QProgressBar {{
