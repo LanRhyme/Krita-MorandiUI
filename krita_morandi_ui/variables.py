@@ -495,6 +495,42 @@ def buildFlatTheme():
             background: #{alternate};
             border-radius: 1px;
         }}
+        QSlider::groove:vertical {{
+            background: #{alternate};
+            width: 2px;
+            border-radius: 1px;
+            border: none;
+        }}
+        QSlider::handle:vertical {{
+            background: #{highlight};
+            width: 10px;
+            height: 10px;
+            margin: 0 -4px;
+            border-radius: 5px;
+            border: none;
+        }}
+        QSlider::handle:vertical:hover {{
+            background: #{active_text_color};
+        }}
+        QSlider::sub-page:vertical {{
+            background: #{highlight};
+            border-radius: 1px;
+        }}
+        QSlider::add-page:vertical {{
+            background: #{alternate};
+            border-radius: 1px;
+        }}
+        QProgressBar {{
+            background: #{alternate};
+            border: none;
+            border-radius: {r_sm}px;
+            text-align: center;
+            color: #{active_text_color};
+        }}
+        QProgressBar::chunk {{
+            background: #{highlight};
+            border-radius: {r_sm}px;
+        }}
         KisDoubleSliderSpinBox, KisSliderSpinBox {{
             background: #{alternate};
             border: none;
@@ -505,12 +541,12 @@ def buildFlatTheme():
         KisDoubleSliderSpinBox QProgressBar, KisSliderSpinBox QProgressBar {{
             background-color: #{alternate};
             max-height: 2px;
-            border-radius: 1px;
+            border-radius: {r_sm}px;
             border: none;
         }}
         KisDoubleSliderSpinBox QProgressBar::chunk, KisSliderSpinBox QProgressBar::chunk {{
             background-color: #{highlight};
-            border-radius: 1px;
+            border-radius: {r_sm}px;
         }} 
         QCheckBox, QRadioButton {{
             color: #{active_text_color};
@@ -996,6 +1032,16 @@ def buildFlatTheme():
         border-radius: {r_sm}px;
         padding: 2px 20px 2px 8px;
         min-height: 18px;
+        border: none;
+    }}
+    KisLayerBox KisDoubleSliderSpinBox, KisLayerBox KisSliderSpinBox {{
+        border-radius: {r_sm}px;
+        background: #{alternate};
+        border: none;
+    }}
+    QToolBar KisDoubleSliderSpinBox, QToolBar KisSliderSpinBox {{
+        border-radius: {r_sm}px;
+        background: #{alternate};
         border: none;
     }}
     KisNodeView {{
