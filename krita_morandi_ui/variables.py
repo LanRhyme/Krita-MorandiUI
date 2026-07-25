@@ -135,12 +135,32 @@ def ensureUIAssets(fg_hex, bg_hex):
   <polygon points="0,0 10,0 5,6" fill="#{bg_hex}"/>
 </svg>'''
 
+    # Tree guide line SVGs for layer nesting
+    lc = fg_hex  # line color
+    # vline: vertical line running full height, centered horizontally
+    vline_svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+  <line x1="10" y1="0" x2="10" y2="20" stroke="#{lc}" stroke-width="1" stroke-opacity="0.35"/>
+</svg>'''
+    # branch-more: vertical line full height + horizontal line from center to right at midpoint
+    branch_more_svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+  <line x1="10" y1="0" x2="10" y2="20" stroke="#{lc}" stroke-width="1" stroke-opacity="0.35"/>
+  <line x1="10" y1="10" x2="20" y2="10" stroke="#{lc}" stroke-width="1" stroke-opacity="0.35"/>
+</svg>'''
+    # branch-end: vertical line from top to midpoint + horizontal from center to right at midpoint
+    branch_end_svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+  <line x1="10" y1="0" x2="10" y2="10" stroke="#{lc}" stroke-width="1" stroke-opacity="0.35"/>
+  <line x1="10" y1="10" x2="20" y2="10" stroke="#{lc}" stroke-width="1" stroke-opacity="0.35"/>
+</svg>'''
+
     p_up = res_dir / "spinbox_up.svg"
     p_down = res_dir / "spinbox_down.svg"
     p_up_h = res_dir / "spinbox_up_hover.svg"
     p_down_h = res_dir / "spinbox_down_hover.svg"
     p_combo_d = res_dir / "combo_down.svg"
     p_combo_dh = res_dir / "combo_down_hover.svg"
+    p_vline = res_dir / "tree_vline.svg"
+    p_branch_more = res_dir / "tree_branch_more.svg"
+    p_branch_end = res_dir / "tree_branch_end.svg"
 
     p_up.write_text(up_svg, encoding="utf-8")
     p_down.write_text(down_svg, encoding="utf-8")
@@ -148,8 +168,13 @@ def ensureUIAssets(fg_hex, bg_hex):
     p_down_h.write_text(down_hover_svg, encoding="utf-8")
     p_combo_d.write_text(combo_down_svg, encoding="utf-8")
     p_combo_dh.write_text(combo_down_hover_svg, encoding="utf-8")
+    p_vline.write_text(vline_svg, encoding="utf-8")
+    p_branch_more.write_text(branch_more_svg, encoding="utf-8")
+    p_branch_end.write_text(branch_end_svg, encoding="utf-8")
 
-    return str(p_up), str(p_down), str(p_up_h), str(p_down_h), str(p_combo_d), str(p_combo_dh)
+    return (str(p_up), str(p_down), str(p_up_h), str(p_down_h),
+            str(p_combo_d), str(p_combo_dh),
+            str(p_vline), str(p_branch_more), str(p_branch_end))
 
 def setColors(hl_color, bg_color, alt_color, act_text="f3f3f2", inact_text="9f9f9f", 
               radius=8, scrollbar=6, opacity=90, title_style="minimalist", focus_hl=True, user_qss=""):
@@ -182,7 +207,8 @@ def buildFlatTheme():
     r_sm = max(2, r // 2)
     r_lg = r + 4
 
-    p_up, p_down, p_up_h, p_down_h, p_combo_d, p_combo_dh = ensureUIAssets(active_text_color, background)
+    (p_up, p_down, p_up_h, p_down_h, p_combo_d, p_combo_dh,
+     p_vline, p_branch_more, p_branch_end) = ensureUIAssets(active_text_color, background)
 
     small_tab_style = "QTabBar::tab { height: " + str(small_tab_size) + "px; }"
 
@@ -1000,27 +1026,24 @@ def buildFlatTheme():
     /* Layer Nesting Tree Guide Lines */
     KisNodeView::branch {{
         background-color: transparent;
-        border: none;
     }}
     KisNodeView::branch:has-siblings:!adjoins-item {{
-        border-left: 1px solid #{alternate};
+        border-image: url('{p_vline}') 0;
     }}
     KisNodeView::branch:has-siblings:adjoins-item {{
-        border-left: 1px solid #{alternate};
-        border-bottom: 1px solid #{alternate};
+        border-image: url('{p_branch_more}') 0;
     }}
     KisNodeView::branch:!has-children:!has-siblings:adjoins-item {{
-        border-left: 1px solid #{alternate};
-        border-bottom: 1px solid #{alternate};
+        border-image: url('{p_branch_end}') 0;
     }}
     KisNodeView::branch:has-children:!has-siblings:closed,
     KisNodeView::branch:closed:has-children:has-siblings {{
-        border-image: none;
+        border-image: url('{p_branch_more}') 0;
         image: url('{p_combo_d}');
     }}
     KisNodeView::branch:open:has-children:!has-siblings,
     KisNodeView::branch:open:has-children:has-siblings {{
-        border-image: none;
+        border-image: url('{p_branch_more}') 0;
         image: url('{p_up}');
     }}
 
