@@ -13,6 +13,8 @@ import xml.etree.ElementTree as ET
 from .settings_dialog import MorandiSettingsDialog
 
 DOCKER_FADE_MS = 180
+POPUP_FADE_MS = 120
+TAB_FADE_MS = 150
 
 
 class DockerFadeFilter(QObject):
@@ -53,6 +55,81 @@ class DockerFadeFilter(QObject):
                 self._anims[wid] = anim
                 anim.start()
         return super().eventFilter(obj, event)
+
+
+class PopupFadeFilter(QObject):
+    """Application-wide event filter that applies fade-in to QMenu and QComboBox popups"""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._anims = {}
+
+    def eventFilter(self, obj, event):
+        if event.type() == QEvent.Type.Show:
+            if isinstance(obj, QMenu):
+                self._fadeIn(obj)
+            elif (isinstance(obj, QWidget) and obj.parent()
+                  and isinstance(obj.parent(), QComboBox)):
+                self._fadeIn(obj)
+        return super().eventFilter(obj, event)
+
+    def _fadeIn(self, widget):
+        wid = id(widget)
+        old = self._anims.get(wid)
+        if old and old.state() == QPropertyAnimation.State.Running:
+            old.stop()
+
+        effect = widget.graphicsEffect()
+        if not isinstance(effect, QGraphicsOpacityEffect):
+            effect = QGraphicsOpacityEffect(widget)
+            widget.setGraphicsEffect(effect)
+
+        effect.setOpacity(0.0)
+        anim = QPropertyAnimation(effect, b"opacity", self)
+        anim.setDuration(POPUP_FADE_MS)
+        anim.setStartValue(0.0)
+        anim.setEndValue(1.0)
+        anim.setEasingCurve(QEasingCurve.Type.OutCubic)
+        self._anims[wid] = anim
+        anim.start()
+
+
+class TabFadeAnimator(QObject):
+    """Installs on QTabWidgets to apply a fade-in animation when switching tabs"""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._effects = {}
+        self._anims = {}
+
+    def install(self, tab_widget):
+        if not isinstance(tab_widget, QTabWidget):
+            return
+        tab_widget.currentChanged.connect(lambda idx, tw=tab_widget: self._onTabChanged(tw, idx))
+
+    def _onTabChanged(self, tw, idx):
+        widget = tw.widget(idx)
+        if not widget:
+            return
+
+        wid = id(widget)
+        old = self._anims.get(wid)
+        if old and old.state() == QPropertyAnimation.State.Running:
+            old.stop()
+
+        effect = widget.graphicsEffect()
+        if not isinstance(effect, QGraphicsOpacityEffect):
+            effect = QGraphicsOpacityEffect(widget)
+            widget.setGraphicsEffect(effect)
+
+        effect.setOpacity(0.0)
+        anim = QPropertyAnimation(effect, b"opacity", self)
+        anim.setDuration(TAB_FADE_MS)
+        anim.setStartValue(0.0)
+        anim.setEndValue(1.0)
+        anim.setEasingCurve(QEasingCurve.Type.OutCubic)
+        self._anims[wid] = anim
+        anim.start()
 
 
 class Redesign(Extension):
@@ -236,6 +313,17 @@ class Redesign(Extension):
         self._dockerFadeFilter = DockerFadeFilter(qwin)
         for dock in qwin.findChildren(QDockWidget):
             self._dockerFadeFilter.install(dock)
+
+        # Install fade-in on menus and combo popups (application-wide)
+        self._popupFadeFilter = PopupFadeFilter(qwin)
+        app = QApplication.instance()
+        if app:
+            app.installEventFilter(self._popupFadeFilter)
+
+        # Install fade animation on tab switches
+        self._tabFadeAnimator = TabFadeAnimator(qwin)
+        for tw in qwin.findChildren(QTabWidget):
+            self._tabFadeAnimator.install(tw)
 
     def openSettingsDialog(self):
         win = Application.activeWindow().qwindow()

@@ -5,7 +5,8 @@ try:
                                  QToolButton, QPushButton, QLabel, QComboBox, QColorDialog,
                                  QCheckBox, QSlider, QGroupBox, QSpinBox, QFileDialog, QTabWidget,
                                  QLineEdit, QPlainTextEdit, QSizePolicy, QMdiArea, QDockWidget, QMessageBox, QApplication,
-                                 QStyleOption, QStylePainter, QStyle, QDialog, QGraphicsOpacityEffect)
+                                 QStyleOption, QStylePainter, QStyle, QDialog, QGraphicsOpacityEffect,
+                                 QMenu, QStackedWidget)
     
     # Enums PyQt6
     MouseButton_LeftButton = Qt.MouseButton.LeftButton
@@ -34,7 +35,8 @@ except ImportError:
                                  QToolButton, QPushButton, QLabel, QComboBox, QColorDialog,
                                  QCheckBox, QSlider, QGroupBox, QSpinBox, QFileDialog, QTabWidget,
                                  QLineEdit, QPlainTextEdit, QSizePolicy, QMdiArea, QDockWidget, QMessageBox, QApplication,
-                                 QStyleOption, QStylePainter, QStyle, QDialog, QGraphicsOpacityEffect)
+                                 QStyleOption, QStylePainter, QStyle, QDialog, QGraphicsOpacityEffect,
+                                 QMenu, QStackedWidget)
     
     # Enums PyQt5
     MouseButton_LeftButton = Qt.LeftButton
