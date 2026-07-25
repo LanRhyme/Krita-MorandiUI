@@ -1,5 +1,5 @@
 try:
-    from PyQt6.QtCore import Qt, QObject, QEvent, QPoint, QSize
+    from PyQt6.QtCore import Qt, QObject, QEvent, QPoint, QSize, QTimer
     from PyQt6.QtGui import QPalette, QColor
     from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QFormLayout, QGridLayout, QScrollArea,
                                  QToolButton, QPushButton, QLabel, QComboBox, QColorDialog,
@@ -28,7 +28,7 @@ try:
         QMessageBox.exec_ = QMessageBox.exec
 
 except ImportError:
-    from PyQt5.QtCore import Qt, QObject, QEvent, QPoint, QSize
+    from PyQt5.QtCore import Qt, QObject, QEvent, QPoint, QSize, QTimer
     from PyQt5.QtGui import QPalette, QColor
     from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QFormLayout, QGridLayout, QScrollArea,
                                  QToolButton, QPushButton, QLabel, QComboBox, QColorDialog,

@@ -325,17 +325,45 @@ def buildFlatTheme():
             border-bottom: none !important;
             padding: 4px;
         }}
-        QLineEdit, QSpinBox, QDoubleSpinBox {{
+        QLineEdit, QSpinBox, QDoubleSpinBox, KisDoubleSliderSpinBox, QAbstractSpinBox {{
             background: #{alternate};
             color: #{active_text_color};
-            border: none;
+            border: none !important;
             border-radius: {r}px;
-            padding: 4px 10px;
+            padding: 3px 8px;
             selection-background-color: #{highlight};
             selection-color: #{background};
         }}
-        QLineEdit:focus, QSpinBox:focus, QDoubleSpinBox:focus {{
-            border: 1px solid #{highlight};
+        QLineEdit:focus, QSpinBox:focus, QDoubleSpinBox:focus, KisDoubleSliderSpinBox:focus, QAbstractSpinBox:focus {{
+            border: 1px solid #{highlight} !important;
+        }}
+        QSpinBox::up-button, QDoubleSpinBox::up-button, QAbstractSpinBox::up-button {{
+            subcontrol-origin: border;
+            subcontrol-position: top right;
+            width: 18px;
+            border: none !important;
+            background: transparent;
+            border-top-right-radius: {r}px;
+        }}
+        QSpinBox::down-button, QDoubleSpinBox::down-button, QAbstractSpinBox::down-button {{
+            subcontrol-origin: border;
+            subcontrol-position: bottom right;
+            width: 18px;
+            border: none !important;
+            background: transparent;
+            border-bottom-right-radius: {r}px;
+        }}
+        QSpinBox::up-button:hover, QDoubleSpinBox::up-button:hover, QAbstractSpinBox::up-button:hover,
+        QSpinBox::down-button:hover, QDoubleSpinBox::down-button:hover, QAbstractSpinBox::down-button:hover {{
+            background-color: #{highlight};
+        }}
+        QSpinBox::up-arrow, QDoubleSpinBox::up-arrow, QAbstractSpinBox::up-arrow {{
+            width: 7px;
+            height: 7px;
+        }}
+        QSpinBox::down-arrow, QDoubleSpinBox::down-arrow, QAbstractSpinBox::down-arrow {{
+            width: 7px;
+            height: 7px;
         }}
         QTabWidget::pane {{
             border: none;

@@ -20,9 +20,13 @@ class Redesign(Extension):
     usesNuToolOptions = False
     ntTB = None
     ntTO = None
+    doc_edit_times = {}
+    timer = None
+    statusTimeLabel = None
 
     def __init__(self, parent):
         super().__init__(parent)
+        self.doc_edit_times = {}
 
     def setup(self):
         if Application.readSetting("Redesign", "usesFlatTheme", "true") == "true":
@@ -42,6 +46,29 @@ class Redesign(Extension):
 
         # Load initial color & style settings
         self.loadColorSettings()
+
+        # Initialize editing timer
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.updateDocEditTime)
+        self.timer.start(1000)
+
+    def updateDocEditTime(self):
+        doc = Application.activeDocument()
+        if doc:
+            doc_key = doc.fileName() if doc.fileName() else str(id(doc))
+            current_sec = self.doc_edit_times.get(doc_key, 0) + 1
+            self.doc_edit_times[doc_key] = current_sec
+
+            h = current_sec // 3600
+            m = (current_sec % 3600) // 60
+            s = current_sec % 60
+            time_str = f"{h:02d}:{m:02d}:{s:02d}"
+
+            if self.statusTimeLabel:
+                self.statusTimeLabel.setText(f"编辑时长: {time_str}")
+        else:
+            if self.statusTimeLabel:
+                self.statusTimeLabel.setText("编辑时长: --:--:--")
 
     def loadColorSettings(self):
         accent_preset = Application.readSetting("Redesign", "accentPreset", "鸢尾紫 (Iris)")
@@ -74,7 +101,16 @@ class Redesign(Extension):
                             title_style=title_style, focus_hl=focus_hl, user_qss=custom_qss)
 
     def createActions(self, window):
-        menu = window.qwindow().menuBar().addMenu("莫兰迪UI")
+        qwin = window.qwindow()
+
+        # Add status bar time tracker
+        statusBar = qwin.statusBar()
+        if statusBar and not self.statusTimeLabel:
+            self.statusTimeLabel = QLabel("编辑时长: --:--:--")
+            self.statusTimeLabel.setStyleSheet(f"color: #{variables.inactive_text_color}; font-size: 11px; padding: 0 10px; border: none;")
+            statusBar.addPermanentWidget(self.statusTimeLabel)
+
+        menu = qwin.menuBar().addMenu("莫兰迪UI")
 
         action_settings = window.createAction("morandiSettings", "设置与外观微调...", "")
         action_settings.triggered.connect(self.openSettingsDialog)
