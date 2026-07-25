@@ -290,12 +290,8 @@ class MorandiSettingsDialog(QDialog):
         self.btn_export_colors_file = QPushButton("导出 .colors 文件...")
         self.btn_export_colors_file.clicked.connect(self.export_colors_to_file)
 
-        self.btn_export_gpl = QPushButton("导出莫兰迪绘画色板 (.gpl)")
-        self.btn_export_gpl.clicked.connect(self.export_gpl_palette)
-
         exp_btn_box.addWidget(self.btn_gen_internal)
         exp_btn_box.addWidget(self.btn_export_colors_file)
-        exp_btn_box.addWidget(self.btn_export_gpl)
 
         exp_group.layout().addRow(exp_btn_box)
         advanced_layout.addWidget(exp_group)

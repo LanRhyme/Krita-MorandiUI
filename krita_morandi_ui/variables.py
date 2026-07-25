@@ -1011,6 +1011,26 @@ def buildFlatTheme():
         border-image: none;
         image: url('{p_up}');
     }}
+
+    /* Morandi Low-Saturation Layer Color Labels */
+    KisNodeView::item[colorLabel="0"], QWidget[colorLabel="0"] {{ border-left: none; }}
+    KisNodeView::item[colorLabel="1"], QWidget[colorLabel="1"] {{ border-left: 5px solid #7f9bb0 !important; }}
+    KisNodeView::item[colorLabel="2"], QWidget[colorLabel="2"] {{ border-left: 5px solid #7b9c90 !important; }}
+    KisNodeView::item[colorLabel="3"], QWidget[colorLabel="3"] {{ border-left: 5px solid #bda572 !important; }}
+    KisNodeView::item[colorLabel="4"], QWidget[colorLabel="4"] {{ border-left: 5px solid #c88a75 !important; }}
+    KisNodeView::item[colorLabel="5"], QWidget[colorLabel="5"] {{ border-left: 5px solid #a67c6d !important; }}
+    KisNodeView::item[colorLabel="6"], QWidget[colorLabel="6"] {{ border-left: 5px solid #ba6b6c !important; }}
+    KisNodeView::item[colorLabel="7"], QWidget[colorLabel="7"] {{ border-left: 5px solid #8c829e !important; }}
+    KisNodeView::item[colorLabel="8"], QWidget[colorLabel="8"] {{ border-left: 5px solid #858580 !important; }}
+
+    #KisColorLabelSelector QToolButton[colorLabel="1"], QToolButton[colorLabel="1"] {{ background-color: #7f9bb0 !important; border-radius: {r_sm}px; }}
+    #KisColorLabelSelector QToolButton[colorLabel="2"], QToolButton[colorLabel="2"] {{ background-color: #7b9c90 !important; border-radius: {r_sm}px; }}
+    #KisColorLabelSelector QToolButton[colorLabel="3"], QToolButton[colorLabel="3"] {{ background-color: #bda572 !important; border-radius: {r_sm}px; }}
+    #KisColorLabelSelector QToolButton[colorLabel="4"], QToolButton[colorLabel="4"] {{ background-color: #c88a75 !important; border-radius: {r_sm}px; }}
+    #KisColorLabelSelector QToolButton[colorLabel="5"], QToolButton[colorLabel="5"] {{ background-color: #a67c6d !important; border-radius: {r_sm}px; }}
+    #KisColorLabelSelector QToolButton[colorLabel="6"], QToolButton[colorLabel="6"] {{ background-color: #ba6b6c !important; border-radius: {r_sm}px; }}
+    #KisColorLabelSelector QToolButton[colorLabel="7"], QToolButton[colorLabel="7"] {{ background-color: #8c829e !important; border-radius: {r_sm}px; }}
+    #KisColorLabelSelector QToolButton[colorLabel="8"], QToolButton[colorLabel="8"] {{ background-color: #858580 !important; border-radius: {r_sm}px; }}
     """
 
     custom_qss_style = custom_qss
