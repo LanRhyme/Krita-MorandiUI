@@ -208,6 +208,15 @@ class Redesign(Extension):
         variables.setColors(hl, bg, alt, radius=r, scrollbar=sb, opacity=nu_opacity,
                             title_style=title_style, focus_hl=focus_hl, user_qss=custom_qss)
 
+    def _safe_create_action(self, window, name, text, menu=""):
+        try:
+            return window.createAction(name, text, menu)
+        except Exception:
+            for act in window.qwindow().actions():
+                if act.objectName() == name:
+                    return act
+            return window.createAction(name, text, menu)
+
     def createActions(self, window):
         qwin = window.qwindow()
 
@@ -220,38 +229,38 @@ class Redesign(Extension):
 
         menu = qwin.menuBar().addMenu("莫兰迪UI")
 
-        action_settings = window.createAction("morandiSettings", "设置与外观微调...", "")
+        action_settings = self._safe_create_action(window, "morandiSettings", "设置与外观微调...", "")
         action_settings.triggered.connect(self.openSettingsDialog)
         menu.addAction(action_settings)
 
-        action_export = window.createAction("morandiExportColors", "导出当前主题方案 (.colors)", "")
+        action_export = self._safe_create_action(window, "morandiExportColors", "导出当前主题方案 (.colors)", "")
         action_export.triggered.connect(self.exportColorsFile)
         menu.addAction(action_export)
 
-        action_json = window.createAction("morandiJsonPreset", "导入/导出配色预设 (JSON)", "")
+        action_json = self._safe_create_action(window, "morandiJsonPreset", "导入/导出配色预设 (JSON)", "")
         action_json.triggered.connect(self.importExportJSONPreset)
         menu.addAction(action_json)
 
         menu.addSeparator()
 
         actions = []
-        actions.append(window.createAction("toolbarBorder", "无边框工具栏", ""))
+        actions.append(self._safe_create_action(window, "toolbarBorder", "无边框工具栏", ""))
         actions[0].setCheckable(True)
         actions[0].setChecked(self.usesBorderlessToolbar)
 
-        actions.append(window.createAction("tabHeight", "细长文档标签", ""))
+        actions.append(self._safe_create_action(window, "tabHeight", "细长文档标签", ""))
         actions[1].setCheckable(True)
         actions[1].setChecked(self.usesThinDocumentTabs)
 
-        actions.append(window.createAction("flatTheme", "启用扁平外观", ""))
+        actions.append(self._safe_create_action(window, "flatTheme", "启用扁平外观", ""))
         actions[2].setCheckable(True)
         actions[2].setChecked(self.usesFlatTheme)
 
-        actions.append(window.createAction("nuToolbox", "悬浮工具箱", ""))
+        actions.append(self._safe_create_action(window, "nuToolbox", "悬浮工具箱", ""))
         actions[3].setCheckable(True)
         actions[3].setChecked(self.usesNuToolbox)
 
-        actions.append(window.createAction("nuToolOptions", "悬浮工具选项", ""))
+        actions.append(self._safe_create_action(window, "nuToolOptions", "悬浮工具选项", ""))
         actions[4].setCheckable(True)
 
         if Application.readSetting("", "ToolOptionsInDocker", "false") == "true":

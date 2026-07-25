@@ -46,8 +46,13 @@ class ntToolOptions():
         action.setChecked(True)
 
         # Disable the related QDockWidget
-        self.dockerAction = window.qwindow().findChild(QDockWidget, "sharedtooldocker").toggleViewAction()
-        self.dockerAction.setEnabled(False)
+        docker = window.qwindow().findChild(QDockWidget, "sharedtooldocker")
+        if docker:
+            self.dockerAction = docker.toggleViewAction()
+            if self.dockerAction:
+                self.dockerAction.setEnabled(False)
+        else:
+            self.dockerAction = None
 
     def ensureFilterIsInstalled(self, subWin):
         """Ensure that the current SubWindow has the filter installed,
@@ -78,5 +83,6 @@ class ntToolOptions():
         return
     
     def close(self):
-        self.dockerAction.setEnabled(True)
+        if self.dockerAction:
+            self.dockerAction.setEnabled(True)
         return self.pad.close()
