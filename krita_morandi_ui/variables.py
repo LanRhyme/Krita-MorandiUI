@@ -1023,28 +1023,9 @@ def buildFlatTheme():
         background-color: #{alternate} !important;
         border-radius: {r_sm}px;
     }}
-    /* Layer Nesting Tree Guide Lines */
     KisNodeView::branch {{
         background-color: transparent;
-    }}
-    KisNodeView::branch:has-siblings:!adjoins-item {{
-        border-image: url('{p_vline}') 0;
-    }}
-    KisNodeView::branch:has-siblings:adjoins-item {{
-        border-image: url('{p_branch_more}') 0;
-    }}
-    KisNodeView::branch:!has-children:!has-siblings:adjoins-item {{
-        border-image: url('{p_branch_end}') 0;
-    }}
-    KisNodeView::branch:has-children:!has-siblings:closed,
-    KisNodeView::branch:closed:has-children:has-siblings {{
-        border-image: url('{p_branch_more}') 0;
-        image: url('{p_combo_d}');
-    }}
-    KisNodeView::branch:open:has-children:!has-siblings,
-    KisNodeView::branch:open:has-children:has-siblings {{
-        border-image: url('{p_branch_more}') 0;
-        image: url('{p_up}');
+        border: none;
     }}
 
     /* Morandi Low-Saturation Layer Color Labels */
