@@ -58,33 +58,21 @@ class Redesign(Extension):
     def updateDocEditTime(self):
         try:
             doc = Application.activeDocument()
-            win = Application.activeWindow()
-            qwin = win.qwindow() if win else None
-
-            if doc and qwin:
-                doc_key = doc.fileName() if doc.fileName() else str(id(doc))
-                
-                # Fetch base total editing time from Krita's documentInfo XML ONCE per doc
-                if doc_key not in self.doc_base_sec:
-                    base_sec = 0
-                    try:
-                        info_xml = doc.documentInfo()
-                        if info_xml:
-                            root = ET.fromstring(info_xml)
-                            for elem in root.iter():
-                                if elem.tag.endswith("editing-time"):
-                                    base_sec = int(elem.text)
-                                    break
-                    except Exception:
-                        base_sec = 0
-                    self.doc_base_sec[doc_key] = base_sec
-                    self.doc_session_sec[doc_key] = 0
-
-                # Only increment session time if Krita active window currently has focus
-                if qwin.isActiveWindow():
-                    self.doc_session_sec[doc_key] += 1
-
-                total_sec = self.doc_base_sec[doc_key] + self.doc_session_sec[doc_key]
+            if doc:
+                total_sec = 0
+                try:
+                    info_xml = doc.documentInfo()
+                    if info_xml:
+                        root = ET.fromstring(info_xml)
+                        for elem in root.iter():
+                            if elem.tag.endswith("editing-time"):
+                                try:
+                                    total_sec = int(elem.text)
+                                except (ValueError, TypeError):
+                                    total_sec = 0
+                                break
+                except Exception:
+                    total_sec = 0
 
                 h = total_sec // 3600
                 m = (total_sec % 3600) // 60
