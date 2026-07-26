@@ -406,7 +406,7 @@ def buildFlatTheme():
             border: none !important;
             border-radius: {r}px;
             padding: 1px 4px;
-            font-size: 11px;
+            font-size: 12px;
             selection-background-color: #{highlight};
             selection-color: #{background};
         }}
@@ -416,7 +416,7 @@ def buildFlatTheme():
             border: none !important;
             border-radius: {r}px;
             padding: 1px 0px 1px 3px;
-            font-size: 11px;
+            font-size: 12px;
             selection-background-color: #{highlight};
             selection-color: #{background};
         }}
@@ -425,7 +425,7 @@ def buildFlatTheme():
             padding: 0px;
             margin: 0px;
             border: none;
-            font-size: 11px;
+            font-size: 12px;
         }}
         QLineEdit:focus, QSpinBox:focus, QDoubleSpinBox:focus, KisDoubleSliderSpinBox:focus, QAbstractSpinBox:focus {{
             border: 1px solid #{highlight} !important;
