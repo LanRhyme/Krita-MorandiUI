@@ -176,15 +176,35 @@ def ensureUIAssets(fg_hex, bg_hex):
             str(p_combo_d), str(p_combo_dh),
             str(p_vline), str(p_branch_more), str(p_branch_end))
 
-def setColors(hl_color, bg_color, alt_color, act_text="f3f3f2", inact_text="9f9f9f", 
+def is_light_color(hex_color):
+    try:
+        h = str(hex_color).lstrip("#")
+        r, g, b = int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16)
+        lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255.0
+        return lum > 0.55
+    except Exception:
+        return False
+
+def setColors(hl_color, bg_color, alt_color, act_text="auto", inact_text="auto", 
               radius=8, scrollbar=6, opacity=90, title_style="minimalist", focus_hl=True, user_qss=""):
     global highlight, background, alternate, active_text_color, inactive_text_color, border_radius, scrollbar_width, nu_opacity
     global docker_title_style, enable_focus_highlight, custom_qss
     highlight = hl_color.lstrip("#")
     background = bg_color.lstrip("#")
     alternate = alt_color.lstrip("#")
-    active_text_color = act_text.lstrip("#")
-    inactive_text_color = inact_text.lstrip("#")
+
+    light_mode = is_light_color(background)
+
+    if act_text is None or act_text in ("auto", "f3f3f2", "ffffff") or (light_mode and act_text in ("f3f3f2", "ffffff")):
+        active_text_color = "242320" if light_mode else "f3f3f2"
+    else:
+        active_text_color = act_text.lstrip("#")
+
+    if inact_text is None or inact_text in ("auto", "9f9f9f", "a09590") or (light_mode and inact_text in ("9f9f9f", "a09590")):
+        inactive_text_color = "6e6b66" if light_mode else "9f9f9f"
+    else:
+        inactive_text_color = inact_text.lstrip("#")
+
     border_radius = int(radius)
     scrollbar_width = int(scrollbar)
     nu_opacity = int(opacity)
