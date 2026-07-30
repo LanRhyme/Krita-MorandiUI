@@ -208,6 +208,11 @@ class Redesign(Extension):
         variables.setColors(hl, bg, alt, radius=r, scrollbar=sb, opacity=nu_opacity,
                             title_style=title_style, focus_hl=focus_hl, user_qss=custom_qss)
 
+        if hasattr(self, 'ntToolBox') and self.ntToolBox and hasattr(self.ntToolBox, 'pad') and self.ntToolBox.pad:
+            self.ntToolBox.pad.setStyleSheet(variables.nu_toolbox_style)
+        if hasattr(self, 'ntToolOptions') and self.ntToolOptions and hasattr(self.ntToolOptions, 'pad') and self.ntToolOptions.pad:
+            self.ntToolOptions.pad.setStyleSheet(variables.nu_tool_options_style)
+
     def _safe_create_action(self, window, name, text, menu=""):
         try:
             return window.createAction(name, text, menu)

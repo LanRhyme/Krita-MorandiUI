@@ -469,6 +469,11 @@ class MorandiSettingsDialog(QDialog):
                              opacity=self.opacity_slider.value(), title_style=title_style_val,
                              focus_hl=focus_hl_val, user_qss=user_qss_val)
 
+        if hasattr(self.ext, 'ntToolBox') and self.ext.ntToolBox and hasattr(self.ext.ntToolBox, 'pad') and self.ext.ntToolBox.pad:
+            self.ext.ntToolBox.pad.setStyleSheet(variables.nu_toolbox_style)
+        if hasattr(self.ext, 'ntToolOptions') and self.ext.ntToolOptions and hasattr(self.ext.ntToolOptions, 'pad') and self.ext.ntToolOptions.pad:
+            self.ext.ntToolOptions.pad.setStyleSheet(variables.nu_tool_options_style)
+
         # Save settings to Krita config
         Application.writeSetting("Redesign", "usesCanvasSync", str(self.cb_canvas_sync.isChecked()).lower())
         Application.writeSetting("Redesign", "accentPreset", self.accent_combo.currentText())
