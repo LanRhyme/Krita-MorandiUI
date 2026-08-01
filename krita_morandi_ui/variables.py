@@ -107,6 +107,7 @@ small_tab_style = ""
 custom_qss_style = ""
 canvas_sync_style = ""
 flat_layer_docker_style = ""
+timeline_exempt_style = ""
 def ensureUIAssets(fg_hex, bg_hex):
     res_dir = Path.home() / ".local/share/krita/pykrita/krita_morandi_ui/resources"
     res_dir.mkdir(parents=True, exist_ok=True)
@@ -220,7 +221,7 @@ def buildFlatTheme():
     global flat_toolbox_style, flat_status_bar_style, flat_tree_view_style
     global flat_overview_docker_style, nu_toolbox_style, nu_toggle_button_style
     global nu_tool_options_style, small_tab_style, custom_qss_style
-    global canvas_sync_style, flat_layer_docker_style
+    global canvas_sync_style, flat_layer_docker_style, timeline_exempt_style
 
     r = border_radius
     sb_w = scrollbar_width
@@ -1118,6 +1119,40 @@ def buildFlatTheme():
     """
 
     custom_qss_style = custom_qss
+
+    # 动画时间轴豁免：Krita 5.x/6.x 的时间轴是 QTableView（KisAnimTimelineFramesView），
+    # 通用 QTableView/QHeaderView 规则的 padding/圆角会改变内容区几何，
+    # 导致拖动关键帧时落点与鼠标位置不一致。恢复其默认布局几何。
+    timeline_exempt_style = f"""
+    KisAnimTimelineFramesView {{
+        padding: 0px !important;
+        border-radius: 0px !important;
+        border: none !important;
+        outline: none !important;
+        background-color: #{background};
+    }}
+    KisAnimTimelineFramesView::item {{
+        padding: 0px !important;
+        margin: 0px !important;
+        border-radius: 0px !important;
+        border: none !important;
+        background-color: transparent;
+    }}
+    KisAnimTimelineFramesView QHeaderView, 
+    KisAnimTimelineTimeHeader, KisAnimTimelineLayersHeader {{
+        background: #{alternate};
+        border: none !important;
+    }}
+    KisAnimTimelineFramesView QHeaderView::section,
+    KisAnimTimelineTimeHeader::section, KisAnimTimelineLayersHeader::section {{
+        padding: 0px !important;
+        border: none !important;
+    }}
+    KisAnimTimelineFramesView::corner {{
+        background: #{alternate};
+        border: none !important;
+    }}
+    """
 
 def generateColorSchemeContent(scheme_name="Morandi-Custom"):
     def rgb_str(hex_c):

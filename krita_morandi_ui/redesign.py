@@ -405,6 +405,9 @@ class Redesign(Extension):
         elif self.usesBorderlessToolbar:
             full_style_sheet += f"\n {variables.no_borders_style} \n"
 
+        # 动画时间轴豁免（放在所有通用规则之后，确保覆盖）
+        full_style_sheet += f"\n {variables.timeline_exempt_style} \n"
+
         window.setStyleSheet(full_style_sheet)
         if app:
             app.setStyleSheet(full_style_sheet)
