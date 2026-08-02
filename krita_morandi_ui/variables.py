@@ -762,7 +762,7 @@ def buildFlatTheme():
         QMenuBar::item:selected {{
             background-color: #{alternate};
         }}
-        QMenu, QToolTip, .KisPopupPalette, QDialog {{
+        QMenu, QToolTip, #KisPopupButtonFrame, .KisPopupPalette, QDialog {{
             background-color: #{background};
             border: none;
             border-radius: {r}px;
