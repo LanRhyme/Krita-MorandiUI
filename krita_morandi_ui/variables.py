@@ -109,7 +109,7 @@ canvas_sync_style = ""
 flat_layer_docker_style = ""
 timeline_exempt_style = ""
 def ensureUIAssets(fg_hex, bg_hex):
-    res_dir = Path.home() / ".local/share/krita/pykrita/krita_morandi_ui/resources"
+    res_dir = Path(__file__).resolve().parent / "resources"
     res_dir.mkdir(parents=True, exist_ok=True)
 
     up_svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="10" height="8" viewBox="0 0 10 8">
@@ -173,9 +173,9 @@ def ensureUIAssets(fg_hex, bg_hex):
     p_branch_more.write_text(branch_more_svg, encoding="utf-8")
     p_branch_end.write_text(branch_end_svg, encoding="utf-8")
 
-    return (str(p_up), str(p_down), str(p_up_h), str(p_down_h),
-            str(p_combo_d), str(p_combo_dh),
-            str(p_vline), str(p_branch_more), str(p_branch_end))
+    return (p_up.as_posix(), p_down.as_posix(), p_up_h.as_posix(), p_down_h.as_posix(),
+            p_combo_d.as_posix(), p_combo_dh.as_posix(),
+            p_vline.as_posix(), p_branch_more.as_posix(), p_branch_end.as_posix())
 
 def is_light_color(hex_color):
     try:
@@ -819,6 +819,21 @@ def buildFlatTheme():
             selection-color: #{background};
             outline: none;
             padding: 4px;
+        }}
+        QComboBox QAbstractItemView::item {{
+            color: #{active_text_color};
+            border: none;
+            border-radius: {r}px;
+            padding: 3px 8px;
+            margin: 1px 2px;
+        }}
+        QComboBox QAbstractItemView::item:hover {{
+            background-color: #{highlight};
+            color: #{background};
+        }}
+        QComboBox QAbstractItemView::item:selected {{
+            background-color: #{highlight};
+            color: #{background};
         }}
     """
 
