@@ -663,7 +663,7 @@ def buildFlatTheme():
             color: #{active_text_color};
         }}
         QToolButton {{
-            background-color: transparent;
+            background-color: #{background};
             border: none;
             border-radius: {r_sm}px;
             padding: 3px;
@@ -735,7 +735,7 @@ def buildFlatTheme():
             border-radius: {r_sm}px;
             border: none;
             padding: 3px;
-            background-color: transparent;
+            background-color: #{background};
         }}
         QToolBar > QToolButton:hover {{
             background-color: #{alternate};
