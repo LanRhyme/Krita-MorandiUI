@@ -1,5 +1,14 @@
 # Krita Morandi UI
 
+<a href="https://qm.qq.com/q/mtg1yNCi1q">
+    <img alt="QQ" src="https://img.shields.io/badge/QQ-729283213-12B7F5?style=flat&logo=qq&logoColor=white"></a>
+
+<h6>Support Me</h6>
+
+  <a href="https://afdian.com/a/LanRhyme" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.shields.io/badge/afdian-@LanRhyme-946ce6?style=for-the-badge&logo=afdian&logoColor=white" alt="afdian"></a>
+
+
 A standalone, sleek, flat UI redesign and Morandi theme engine plugin for Krita
 
 ![Krita Morandi UI Screenshot](https://raw.githubusercontent.com/LanRhyme/Krita-MorandiUI/main/screenshot.png)
