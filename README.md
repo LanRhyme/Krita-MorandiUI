@@ -1,3 +1,5 @@
+<div align="center">
+
 # Krita Morandi UI
 
 <a href="https://qm.qq.com/q/mtg1yNCi1q">
@@ -8,6 +10,7 @@
   <a href="https://afdian.com/a/LanRhyme" target="_blank" rel="noopener noreferrer">
     <img src="https://img.shields.io/badge/afdian-@LanRhyme-946ce6?style=for-the-badge&logo=afdian&logoColor=white" alt="afdian"></a>
 
+</div>
 
 A standalone, sleek, flat UI redesign and Morandi theme engine plugin for Krita
 
